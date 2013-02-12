@@ -1,0 +1,19 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                           controllers.Application.index()
+GET     /theForm                    controllers.Application.theForm()
+GET     /facebook/index.html        controllers.Application.facebookIndex()
+GET     /twitter/index.html         controllers.Application.twitterIndex()
+GET     /form/index.html            controllers.Application.formIndex()
+GET     /basicauth/index.html       controllers.Application.basicauthIndex()
+GET     /cas/index.html             controllers.Application.casIndex()
+GET     /myopenid/index.html        controllers.Application.myopenidIndex()
+POST    /myopenid/index.html        controllers.Application.myopenidIndex()
+GET     /callback                   org.pac4j.play.CallbackController.callback()
+POST    /callback                   org.pac4j.play.CallbackController.callback()
+GET     /casProxyCallback           org.pac4j.play.CallbackController.callback()
+POST    /casProxyCallback           org.pac4j.play.CallbackController.callback()
+GET     /logout                     org.pac4j.play.CallbackController.logoutAndRedirect()
