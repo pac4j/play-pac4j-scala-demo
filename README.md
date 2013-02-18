@@ -16,7 +16,12 @@ and in the *project/plugins.sbt* file :
 //addSbtPlugin("play" % "sbt-plugin" % "2.1.0")
 // play 2.0.4 :
 // addSbtPlugin("play" % "sbt-plugin" % "2.0.4")</code></pre>
- 
+and the appropriate dependency in the *project/Build.scala* file :
+<pre><code>//      for play 2.0 :
+//      "org.pac4j" % "play-pac4j_scala2.9" % "1.1.0-SNAPSHOT",
+//      for play 2.1 :
+//      "org.pac4j" % "play-pac4j_scala2.10" % "1.1.0-SNAPSHOT",</code></pre>
+
 To start quickly :<pre><code>cd play-pac4j-java-demo
 play run</code></pre>
 

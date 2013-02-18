@@ -33,7 +33,7 @@ object Global extends GlobalSettings {
         
     // CAS
     val casClient = new CasClient()
-    casClient.setGateway(true)
+    //casClient.setGateway(true)
     //casClient.setLogoutHandler(new PlayLogoutHandler())
     casClient.setCasLoginUrl("http://localhost:8080/cas/login")
 
