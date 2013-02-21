@@ -7,7 +7,7 @@ import org.pac4j.core.profile._
 import org.pac4j.play._
 import org.pac4j.play.scala._
 
-object Application extends ScalaController2 {
+object Application extends ScalaController {
 
   def index = Action { request =>
     val newSession = getOrCreateSessionId(request)
