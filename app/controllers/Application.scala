@@ -7,8 +7,8 @@ import org.pac4j.core.profile._
 import org.pac4j.play._
 import org.pac4j.play.scala._
 
-object Application extends ScalaController {
-  
+object Application extends ScalaController2 {
+
   def index = Action { request =>
     val newSession = getOrCreateSessionId(request)
     val urlFacebook = getRedirectionUrl(request, newSession, "FacebookClient", "/?0")
@@ -22,41 +22,41 @@ object Application extends ScalaController {
   }
 
   def facebookIndex = RequiresAuthentication("FacebookClient") { profile =>
-   Action { request =>
-     Ok(views.html.protectedIndex(profile))
-   }
+    Action { request =>
+      Ok(views.html.protectedIndex(profile))
+    }
   }
 
   def twitterIndex = RequiresAuthentication("TwitterClient") { profile =>
-   Action { request =>
-     Ok(views.html.protectedIndex(profile))
-   }
+    Action { request =>
+      Ok(views.html.protectedIndex(profile))
+    }
   }
 
   def formIndex = RequiresAuthentication("FormClient") { profile =>
-   Action { request =>
-     Ok(views.html.protectedIndex(profile))
-   }
+    Action { request =>
+      Ok(views.html.protectedIndex(profile))
+    }
   }
 
   def basicauthIndex = RequiresAuthentication("BasicAuthClient") { profile =>
-   Action { request =>
-     Ok(views.html.protectedIndex(profile))
-   }
+    Action { request =>
+      Ok(views.html.protectedIndex(profile))
+    }
   }
 
   def casIndex = RequiresAuthentication("CasClient") { profile =>
-   Action { request =>
-     Ok(views.html.protectedIndex(profile))
-   }
+    Action { request =>
+      Ok(views.html.protectedIndex(profile))
+    }
   }
 
   def myopenidIndex = RequiresAuthentication("MyOpenIdClient") { profile =>
-   Action { request =>
-     Ok(views.html.protectedIndex(profile))
-   }
+    Action { request =>
+      Ok(views.html.protectedIndex(profile))
+    }
   }
-  
+
   def theForm = Action { request =>
     val formClient = Config.getClients().findClient("FormClient").asInstanceOf[FormClient]
     Ok(views.html.theForm.render(formClient.getCallbackUrl()))
