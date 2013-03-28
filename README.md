@@ -5,7 +5,7 @@ The <b>play-pac4j</b> library is built to delegate authentication to a provider 
 
 <h2>Quick start & test</h2> 
 
-If you want to use this demo with Play framework <b>2.0.4 or 2.1.0</b>, comment/uncomment the appropriate properties in the *project/Build.scala* file :
+If you want to use this demo with Play framework <b>2.0.4 or 2.1.0</b>, comment/uncomment the appropriate properties in the *project/build.properties* file :
 <pre><code># play 2.1
 #sbt.version=0.12.2
 # play 2.0.4
