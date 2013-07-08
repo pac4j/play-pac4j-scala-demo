@@ -3,6 +3,7 @@
 <a href="facebook/index.html">Protected url by Facebook : facebook/index.html</a><br />
 <a href="twitter/index.html">Protected url by Twitter : twitter/index.html</a><br />
 <a href="form/index.html">Protected url by form authentication : form/index.html</a><br />
+<a href="javascript:ajaxClick();">Click here to send AJAX request after performing form authentication</a><br />
 <a href="basicauth/index.html">Protected url by basic auth : basicauth/index.html</a><br />
 <a href="cas/index.html">Protected url by CAS : cas/index.html</a><br />
 <form action="myopenid/index.html" method="POST">
@@ -24,3 +25,9 @@ profile : @profile
   <input type="text" name="openIdUser" value="http://xxx.myopenid.com/" />
   <input type="submit" value="Authenticate with myopenid.com" />
 </form>
+
+<!-- Link to Google CDN's jQuery; fall back to local -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="assets/js/jquery.min.js"><\/script>')</script>
+
+<script src="assets/js/app.js"></script>
