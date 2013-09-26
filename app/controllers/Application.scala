@@ -57,6 +57,9 @@ object Application extends ScalaController {
   }
 
   def casIndex = RequiresAuthentication("CasClient") { profile =>
+  
+    println("Made it to casIndex with profile: $profile")
+    
     Action { request =>
       Ok(views.html.protectedIndex(profile))
     }
