@@ -1,5 +1,6 @@
 package controllers
 
+import scala.concurrent.Future
 import play.api._
 import play.api.mvc._
 import org.pac4j.play._
@@ -13,10 +14,10 @@ import play.api.mvc.Results._
 
 object Global extends GlobalSettings {
 
-  override def onError(request: RequestHeader, t: Throwable): Result = {
-    InternalServerError(
+  override def onError(request: RequestHeader, t: Throwable) = {
+    Future.successful(InternalServerError(
       views.html.error500.render()
-    )
+    ))
   }
 
   override def onStart(app: Application) {
