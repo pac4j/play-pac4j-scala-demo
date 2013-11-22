@@ -22,7 +22,7 @@ and the appropriate dependency in the *project/Build.scala* file :
 //      for play 2.1 :
 //      "org.pac4j" % "play-pac4j_scala2.10" % "1.1.0-SNAPSHOT",</code></pre>
 
-To start quickly :<pre><code>cd play-pac4j-java-demo
+To start quickly :<pre><code>cd play-pac4j-scala-demo
 play run</code></pre>
 
 To test, you can call a protected url by clicking on the "Protected by <b>xxx</b> : <b>xxx</b>/index.html" url, which will start the authentication process with the <b>xxx</b> provider.<br />
