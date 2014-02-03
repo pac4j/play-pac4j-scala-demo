@@ -2,6 +2,7 @@ package controllers
 
 import scala.concurrent.Future
 import play.api._
+import play.api.Play.current
 import play.api.mvc._
 import org.pac4j.play._
 import org.pac4j.core.client._
@@ -23,25 +24,28 @@ object Global extends GlobalSettings {
   override def onStart(app: Application) {
     Config.setErrorPage401(views.html.error401.render().toString())
     Config.setErrorPage403(views.html.error403.render().toString())
-        
+    
+    val baseUrl = Play.application.configuration.getString("baseUrl").get
+    val casUrl = Play.application.configuration.getString("casUrl").get
+
     // OAuth
     val facebookClient = new FacebookClient("132736803558924", "e461422527aeedb32ee6c10834d3e19e")
     val twitterClient = new TwitterClient("HVSQGAw2XmiwcKOTvZFbQ", "FSiO9G9VRR4KCuksky0kgGuo8gAVndYymr4Nl7qc8AA")
 
     // HTTP
-    val formClient = new FormClient("http://localhost:9000/theForm", new SimpleTestUsernamePasswordAuthenticator())
+    val formClient = new FormClient(baseUrl + "/theForm", new SimpleTestUsernamePasswordAuthenticator())
     val basicAuthClient = new BasicAuthClient(new SimpleTestUsernamePasswordAuthenticator())
         
     // CAS
     val casClient = new CasClient()
     //casClient.setGateway(true)
     //casClient.setLogoutHandler(new PlayLogoutHandler())
-    casClient.setCasLoginUrl("http://localhost:8080/cas/login")
+    casClient.setCasLoginUrl(casUrl)
 
 	// OpenID
 	val myOpenIdClient = new MyOpenIdClient()
 	    
-    val clients = new Clients("http://localhost:9000/callback", facebookClient, twitterClient, formClient, basicAuthClient, casClient, myOpenIdClient)
+    val clients = new Clients(baseUrl + "/callback", facebookClient, twitterClient, formClient, basicAuthClient, casClient, myOpenIdClient)
     Config.setClients(clients)
     // for test purposes : profile timeout = 60 seconds
     // Config.setProfileTimeout(60)

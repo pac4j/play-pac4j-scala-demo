@@ -7,6 +7,10 @@ The **play-pac4j** library is built to delegate authentication to a provider and
 
 To work with the version 2.0 or 2.1 of the Play framework, please use the branch *play2.0or2.1* of this project...
 
+## Live demo
+
+Find a live demo on Heroku: [http://play-pac4j-scala-demo.herokuapp.com](http://play-pac4j-scala-demo.herokuapp.com/)
+
 ## Quick start & test
 
 To start quickly :
