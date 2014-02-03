@@ -25,11 +25,13 @@ object Global extends GlobalSettings {
     Config.setErrorPage401(views.html.error401.render().toString())
     Config.setErrorPage403(views.html.error403.render().toString())
     
+    val fbId = Play.application.configuration.getString("fbId").get
+    val fbSecret = Play.application.configuration.getString("fbSecret").get
     val baseUrl = Play.application.configuration.getString("baseUrl").get
     val casUrl = Play.application.configuration.getString("casUrl").get
 
     // OAuth
-    val facebookClient = new FacebookClient("132736803558924", "e461422527aeedb32ee6c10834d3e19e")
+    val facebookClient = new FacebookClient(fbId, fbSecret)
     val twitterClient = new TwitterClient("HVSQGAw2XmiwcKOTvZFbQ", "FSiO9G9VRR4KCuksky0kgGuo8gAVndYymr4Nl7qc8AA")
 
     // HTTP
