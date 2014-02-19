@@ -17,9 +17,9 @@ object Application extends ScalaController {
     val urlForm = getRedirectionUrl(request, newSession, "FormClient", "/?2")
     val urlBA = getRedirectionUrl(request, newSession, "BasicAuthClient", "/?3")
     val urlCas = getRedirectionUrl(request, newSession, "CasClient", "/?4")
-    val urlMyopenid = getRedirectionUrl(request, newSession, "MyOpenIdClient", "/?5")
+    val urlGoogleOpenId = getRedirectionUrl(request, newSession, "GoogleOpenIdClient", "/?5")
     val profile = getUserProfile(request)
-    Ok(views.html.index(profile, urlFacebook, urlTwitter, urlForm, urlBA, urlCas, urlMyopenid)).withSession(newSession)
+    Ok(views.html.index(profile, urlFacebook, urlTwitter, urlForm, urlBA, urlCas, urlGoogleOpenId)).withSession(newSession)
   }
 
   def facebookIndex = RequiresAuthentication("FacebookClient") { profile =>
@@ -62,7 +62,7 @@ object Application extends ScalaController {
     }
   }
 
-  def myopenidIndex = RequiresAuthentication("MyOpenIdClient") { profile =>
+  def googleOpenIdIndex = RequiresAuthentication("GoogleOpenIdClient") { profile =>
     Action { request =>
       Ok(views.html.protectedIndex(profile))
     }

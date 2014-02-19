@@ -45,9 +45,9 @@ object Global extends GlobalSettings {
     casClient.setCasLoginUrl(casUrl)
 
 	// OpenID
-	val myOpenIdClient = new MyOpenIdClient()
+	val googleOpenIdClient = new GoogleOpenIdClient()
 	    
-    val clients = new Clients(baseUrl + "/callback", facebookClient, twitterClient, formClient, basicAuthClient, casClient, myOpenIdClient)
+    val clients = new Clients(baseUrl + "/callback", facebookClient, twitterClient, formClient, basicAuthClient, casClient, googleOpenIdClient)
     Config.setClients(clients)
     // for test purposes : profile timeout = 60 seconds
     // Config.setProfileTimeout(60)
