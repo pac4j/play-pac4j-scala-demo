@@ -12,12 +12,12 @@ object Application extends ScalaController {
 
   def index = Action { request =>
     val newSession = getOrCreateSessionId(request)
-    val urlFacebook = getRedirectionUrl(request, newSession, "FacebookClient", "/?0")
-    val urlTwitter = getRedirectionUrl(request, newSession, "TwitterClient", "/?1")
-    val urlForm = getRedirectionUrl(request, newSession, "FormClient", "/?2")
-    val urlBA = getRedirectionUrl(request, newSession, "BasicAuthClient", "/?3")
-    val urlCas = getRedirectionUrl(request, newSession, "CasClient", "/?4")
-    val urlGoogleOpenId = getRedirectionUrl(request, newSession, "GoogleOpenIdClient", "/?5")
+    val urlFacebook = getRedirectAction(request, newSession, "FacebookClient", "/?0").getLocation()
+    val urlTwitter = getRedirectAction(request, newSession, "TwitterClient", "/?1").getLocation()
+    val urlForm = getRedirectAction(request, newSession, "FormClient", "/?2").getLocation()
+    val urlBA = getRedirectAction(request, newSession, "BasicAuthClient", "/?3").getLocation()
+    val urlCas = getRedirectAction(request, newSession, "CasClient", "/?4").getLocation()
+    val urlGoogleOpenId = getRedirectAction(request, newSession, "GoogleOpenIdClient", "/?5").getLocation()
     val profile = getUserProfile(request)
     Ok(views.html.index(profile, urlFacebook, urlTwitter, urlForm, urlBA, urlCas, urlGoogleOpenId)).withSession(newSession)
   }
