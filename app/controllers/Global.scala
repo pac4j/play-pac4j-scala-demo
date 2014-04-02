@@ -7,6 +7,7 @@ import play.api.mvc._
 import org.pac4j.play._
 import org.pac4j.core.client._
 import org.pac4j.cas.client._
+import org.pac4j.saml.client._
 import org.pac4j.oauth.client._
 import org.pac4j.http.client._
 import org.pac4j.openid.client._
@@ -43,11 +44,18 @@ object Global extends GlobalSettings {
     //casClient.setGateway(true)
     //casClient.setLogoutHandler(new PlayLogoutHandler())
     casClient.setCasLoginUrl(casUrl)
+    
+    // SAML
+    val saml2Client = new Saml2Client()
+    saml2Client.setKeystorePath(Play.application.resource("samlKeystore.jks").get.getFile())
+    saml2Client.setKeystorePassword("pac4j-demo-passwd")
+    saml2Client.setPrivateKeyPassword("pac4j-demo-passwd")
+    saml2Client.setIdpMetadataPath(Play.application.resource("openidp-feide.xml").get.getFile())
 
 	// OpenID
 	val googleOpenIdClient = new GoogleOpenIdClient()
 	    
-    val clients = new Clients(baseUrl + "/callback", facebookClient, twitterClient, formClient, basicAuthClient, casClient, googleOpenIdClient)
+    val clients = new Clients(baseUrl + "/callback", facebookClient, twitterClient, formClient, basicAuthClient, casClient, saml2Client, googleOpenIdClient)
     Config.setClients(clients)
     // for test purposes : profile timeout = 60 seconds
     // Config.setProfileTimeout(60)
