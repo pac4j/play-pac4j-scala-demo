@@ -1,4 +1,4 @@
-@(profile : org.pac4j.core.profile.CommonProfile, urlFacebook: String, urlTwitter: String, urlForm: String, urlBasicAuth: String, urlCas: String, urlGoogleOpenId: String)
+@(profile : org.pac4j.core.profile.CommonProfile, urlFacebook: String, urlTwitter: String, urlForm: String, urlBasicAuth: String, urlCas: String, urlGoogleOpenId: String, urlSaml: String)
 <h1>index</h1>
 <a href="facebook/index.html">Protected url by Facebook : facebook/index.html</a><br />
 <a href="twitter/index.html">Protected url by Twitter : twitter/index.html</a><br />
@@ -6,6 +6,7 @@
 <a href="javascript:ajaxClick();">Click here to send AJAX request after performing form authentication</a><br />
 <a href="basicauth/index.html">Protected url by basic auth : basicauth/index.html</a><br />
 <a href="cas/index.html">Protected url by CAS : cas/index.html</a><br />
+<a href="saml/index.html">Protected url by SAML : saml/index.html</a><br />
 <form action="google-openid/index.html" method="POST">
   <input type="text" name="openIdUser" value="https://www.google.com/accounts/o8/id" />
   <input type="submit" value="Protected url by Google OpenID: google-openid/index.html" />
@@ -21,6 +22,7 @@ profile : @profile
 <a href="@urlForm">Authenticate with form</a><br />
 <a href="@urlBasicAuth">Authenticate with basic auth</a><br />
 <a href="@urlCas">Authenticate with CAS</a><br />
+<a href="@urlSaml">Authenticate with SAML</a><br />
 <form action="@urlGoogleOpenId" method="POST">
   <input type="text" name="openIdUser" value="https://www.google.com/accounts/o8/id" />
   <input type="submit" value="Authenticate with Google OpenID" />
