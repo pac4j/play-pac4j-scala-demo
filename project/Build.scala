@@ -15,11 +15,12 @@ object ApplicationBuild extends Build {
       "org.pac4j" % "pac4j-http" % "1.5.0-SNAPSHOT",
       "org.pac4j" % "pac4j-cas" % "1.5.0-SNAPSHOT",
       "org.pac4j" % "pac4j-openid" % "1.5.0-SNAPSHOT",
-      "org.pac4j" % "pac4j-oauth" % "1.5.0-SNAPSHOT"
+      "org.pac4j" % "pac4j-oauth" % "1.5.0-SNAPSHOT",
+      "org.pac4j" % "pac4j-saml" % "1.5.0-SNAPSHOT"
     )
 
     val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings(
       resolvers ++= Seq("Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository",
-    		  			"Sonatype snapshots repository" at "https://oss.sonatype.org/content/repositories/snapshots/")
+                "Sonatype snapshots repository" at "https://oss.sonatype.org/content/repositories/snapshots/")
     )
 }
