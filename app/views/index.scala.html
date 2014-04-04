@@ -1,4 +1,4 @@
-@(profile : org.pac4j.core.profile.CommonProfile, urlFacebook: String, urlTwitter: String, urlForm: String, urlBasicAuth: String, urlCas: String)
+@(profile : org.pac4j.core.profile.CommonProfile, urlFacebook: String, urlTwitter: String, urlForm: String, urlBasicAuth: String, urlCas: String, urlSaml: String)
 <h1>index</h1>
 <a href="facebook/index.html">Protected url by Facebook : facebook/index.html</a><br />
 <a href="twitter/index.html">Protected url by Twitter : twitter/index.html</a><br />
@@ -6,6 +6,7 @@
 <a href="javascript:ajaxClick();">Click here to send AJAX request after performing form authentication</a><br />
 <a href="basicauth/index.html">Protected url by basic auth : basicauth/index.html</a><br />
 <a href="cas/index.html">Protected url by CAS : cas/index.html</a><br />
+<a href="saml/index.html">Protected url by SAML : saml/index.html</a><br />
 <br />
 <a href="logout">logout</a>
 <br /><br />
@@ -17,6 +18,7 @@ profile : @profile
 <a href="@urlForm">Authenticate with form</a><br />
 <a href="@urlBasicAuth">Authenticate with basic auth</a><br />
 <a href="@urlCas">Authenticate with CAS</a><br />
+<a href="@urlSaml">Authenticate with SAML</a><br />
 
 <!-- Link to Google CDN's jQuery; fall back to local -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
