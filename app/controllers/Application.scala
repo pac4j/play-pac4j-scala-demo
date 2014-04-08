@@ -45,7 +45,12 @@ object Application extends ScalaController {
   def formIndexJson = RequiresAuthentication("FormClient", "", true) { profile =>
     Action { request =>
       val content = views.html.protectedIndex.render(profile)
+      // Play 2.1
       val json = Json.obj("content" -> content.toString())
+      // Play 2.0
+      /*val json = Json.toJson(
+              Map("content" -> content.toString())
+              )*/
       Ok(json).as("application/json")
     }
   }
