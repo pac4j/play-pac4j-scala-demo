@@ -1,6 +1,6 @@
 <h2>What is this project ?</h2>
 
-This <b>play-pac4j-scala-demo</b> project is a Play 2.x Scala project to test the <a href="https://github.com/leleuj/play-pac4j">play-pac4j library</a> with Facebook, Twitter, form authentication, basic auth, CAS...<br />
+This <b>play-pac4j-scala-demo</b> project is a Play 2.0 Scala project to test the <a href="https://github.com/leleuj/play-pac4j">play-pac4j library</a> with Facebook, Twitter, form authentication, basic auth, CAS...<br />
 The <b>play-pac4j</b> library is built to delegate authentication to a provider and be authenticated back in the protected application with a complete user profile retrieved from the provider.
 
 <h2>Quick start & test</h2> 
