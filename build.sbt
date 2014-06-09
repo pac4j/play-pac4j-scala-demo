@@ -5,7 +5,7 @@ version  := """1.2.0-SNAPSHOT"""
 scalaVersion := "2.10.2"
 
 libraryDependencies ++= Seq(
-  "org.pac4j"         % "play-pac4j_scala" % "1.2.1-SNAPSHOT",
+  "org.pac4j"         % "play-pac4j_scala" % "1.2.1",
   "org.pac4j"         % "pac4j-http"           % "1.5.1",
   "org.pac4j"         % "pac4j-cas"            % "1.5.1",
   "org.pac4j"         % "pac4j-openid"         % "1.5.1",
