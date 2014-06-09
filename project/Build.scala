@@ -8,7 +8,7 @@ object ApplicationBuild extends Build {
     val appVersion      = "1.0-SNAPSHOT"
 
     val appDependencies = Seq(
-      "org.pac4j" % "play-pac4j_scala2.10" % "1.1.3-SNAPSHOT",
+      "org.pac4j" % "play-pac4j_scala2.10" % "1.1.3",
       "org.pac4j" % "pac4j-http" % "1.5.1",
       "org.pac4j" % "pac4j-cas" % "1.5.1",
       "org.pac4j" % "pac4j-openid" % "1.5.1",
