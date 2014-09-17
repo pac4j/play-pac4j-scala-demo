@@ -37,6 +37,7 @@ object Global extends GlobalSettings {
     //casClient.setGateway(true)
     //casClient.setLogoutHandler(new PlayLogoutHandler())
     casClient.setCasLoginUrl("https://freeuse1.casinthecloud.com/leleujgithub/login")
+    casClient.setCasPrefixUrl("https://freeuse1.casinthecloud.com/leleujgithub/p3")
 
     // SAML
     val saml2Client = new Saml2Client()
