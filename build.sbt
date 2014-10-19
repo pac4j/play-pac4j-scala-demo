@@ -8,11 +8,11 @@ scalaVersion := "2.11.1"
 
 libraryDependencies ++= Seq(
   "org.pac4j"         % "play-pac4j_scala2.11" % "1.3.0-SNAPSHOT",
-  "org.pac4j"         % "pac4j-http"           % "1.6.0-RC2-SNAPSHOT",
-  "org.pac4j"         % "pac4j-cas"            % "1.6.0-RC2-SNAPSHOT",
-  "org.pac4j"         % "pac4j-openid"         % "1.6.0-RC2-SNAPSHOT",
-  "org.pac4j"         % "pac4j-oauth"          % "1.6.0-RC2-SNAPSHOT",
-  "org.pac4j"         % "pac4j-saml"           % "1.6.0-RC2-SNAPSHOT",
+  "org.pac4j"         % "pac4j-http"           % "1.6.0",
+  "org.pac4j"         % "pac4j-cas"            % "1.6.0",
+  "org.pac4j"         % "pac4j-openid"         % "1.6.0",
+  "org.pac4j"         % "pac4j-oauth"          % "1.6.0",
+  "org.pac4j"         % "pac4j-saml"           % "1.6.0",
   "com.typesafe.play" % "play-cache_2.11"      % "2.3.0"
 )  
 
