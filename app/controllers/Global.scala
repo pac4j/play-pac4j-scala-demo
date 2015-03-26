@@ -6,11 +6,13 @@ import play.api.Play.current
 import play.api.mvc._
 import org.pac4j.play._
 import org.pac4j.core.client._
+import org.pac4j.core.context._
 import org.pac4j.cas.client._
 import org.pac4j.saml.client._
 import org.pac4j.oauth.client._
 import org.pac4j.http.client._
-import org.pac4j.openid.client._
+import org.pac4j.http.profile._
+import org.pac4j.oidc.client._
 import org.pac4j.http.credentials._
 import play.api.mvc.Results._
 
@@ -23,8 +25,8 @@ object Global extends GlobalSettings {
   }
 
   override def onStart(app: Application) {
-    Config.setErrorPage401(views.html.error401.render().toString())
-    Config.setErrorPage403(views.html.error403.render().toString())
+    BaseConfig.setErrorPage401(views.html.error401.render().toString())
+    BaseConfig.setErrorPage403(views.html.error403.render().toString())
     
     val fbId = Play.application.configuration.getString("fbId").get
     val fbSecret = Play.application.configuration.getString("fbSecret").get
@@ -36,8 +38,8 @@ object Global extends GlobalSettings {
     val twitterClient = new TwitterClient("HVSQGAw2XmiwcKOTvZFbQ", "FSiO9G9VRR4KCuksky0kgGuo8gAVndYymr4Nl7qc8AA")
 
     // HTTP
-    val formClient = new FormClient(baseUrl + "/theForm", new SimpleTestUsernamePasswordAuthenticator())
-    val basicAuthClient = new BasicAuthClient(new SimpleTestUsernamePasswordAuthenticator())
+    val formClient = new FormClient(baseUrl + "/theForm", new SimpleTestUsernamePasswordAuthenticator(), new UsernameProfileCreator())
+    val basicAuthClient = new BasicAuthClient(new SimpleTestUsernamePasswordAuthenticator(), new UsernameProfileCreator())
         
     // CAS
     val casClient = new CasClient()
@@ -52,10 +54,14 @@ object Global extends GlobalSettings {
     saml2Client.setPrivateKeyPassword("pac4j-demo-passwd")
     saml2Client.setIdpMetadataPath("resource:openidp-feide.xml")
 
-	// OpenID
-	val googleOpenIdClient = new GoogleOpenIdClient()
+	// OpenID Connect
+	val oidcClient = new OidcClient()
+	oidcClient.setClientID("343992089165-i1es0qvej18asl33mvlbeq750i3ko32k.apps.googleusercontent.com");
+    oidcClient.setSecret("unXK_RSCbCXLTic2JACTiAo9");
+    oidcClient.setDiscoveryURI("https://accounts.google.com/.well-known/openid-configuration");
+    oidcClient.addCustomParam("prompt", "consent");
 	    
-    val clients = new Clients(baseUrl + "/callback", facebookClient, twitterClient, formClient, basicAuthClient, casClient, saml2Client, googleOpenIdClient)
+    val clients = new Clients(baseUrl + "/callback", facebookClient, twitterClient, formClient, basicAuthClient, casClient, saml2Client, oidcClient)
     Config.setClients(clients)
     // for test purposes : profile timeout = 60 seconds
     // Config.setProfileTimeout(60)
