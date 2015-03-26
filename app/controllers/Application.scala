@@ -17,10 +17,10 @@ object Application extends ScalaController {
     val urlForm = getRedirectAction(request, newSession, "FormClient", "/?2").getLocation()
     val urlBA = getRedirectAction(request, newSession, "BasicAuthClient", "/?3").getLocation()
     val urlCas = getRedirectAction(request, newSession, "CasClient", "/?4").getLocation()
-    val urlGoogleOpenId = getRedirectAction(request, newSession, "GoogleOpenIdClient", "/?5").getLocation()
+    val urlOidc = getRedirectAction(request, newSession, "OidcClient", "/?5").getLocation()
     val urlSaml = getRedirectAction(request, newSession, "Saml2Client", "/?6").getLocation()
     val profile = getUserProfile(request)
-    Ok(views.html.index(profile, urlFacebook, urlTwitter, urlForm, urlBA, urlCas, urlGoogleOpenId, urlSaml)).withSession(newSession)
+    Ok(views.html.index(profile, urlFacebook, urlTwitter, urlForm, urlBA, urlCas, urlOidc, urlSaml)).withSession(newSession)
   }
 
   def facebookIndex = RequiresAuthentication("FacebookClient") { profile =>
@@ -69,7 +69,7 @@ object Application extends ScalaController {
     }
   }
 
-  def googleOpenIdIndex = RequiresAuthentication("GoogleOpenIdClient") { profile =>
+  def oidcIndex = RequiresAuthentication("OidcClient") { profile =>
     Action { request =>
       Ok(views.html.protectedIndex(profile))
     }
