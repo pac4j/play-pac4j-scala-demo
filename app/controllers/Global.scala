@@ -1,5 +1,7 @@
 package controllers
 
+import org.pac4j.http.profile.UsernameProfileCreator
+
 import scala.concurrent.Future
 import play.api._
 import play.api.Play.current
@@ -10,7 +12,6 @@ import org.pac4j.cas.client._
 import org.pac4j.saml.client._
 import org.pac4j.oauth.client._
 import org.pac4j.http.client._
-import org.pac4j.openid.client._
 import org.pac4j.http.credentials._
 import play.api.mvc.Results._
 
@@ -36,8 +37,8 @@ object Global extends GlobalSettings {
     val twitterClient = new TwitterClient("HVSQGAw2XmiwcKOTvZFbQ", "FSiO9G9VRR4KCuksky0kgGuo8gAVndYymr4Nl7qc8AA")
 
     // HTTP
-    val formClient = new FormClient(baseUrl + "/theForm", new SimpleTestUsernamePasswordAuthenticator())
-    val basicAuthClient = new BasicAuthClient(new SimpleTestUsernamePasswordAuthenticator())
+    val formClient = new FormClient(baseUrl + "/theForm", new SimpleTestUsernamePasswordAuthenticator(), new UsernameProfileCreator())
+    val basicAuthClient = new BasicAuthClient(new SimpleTestUsernamePasswordAuthenticator(), new UsernameProfileCreator())
         
     // CAS
     val casClient = new CasClient()
@@ -52,10 +53,7 @@ object Global extends GlobalSettings {
     saml2Client.setPrivateKeyPassword("pac4j-demo-passwd")
     saml2Client.setIdpMetadataPath(Play.application.resource("openidp-feide.xml").get.getFile())
 
-	// OpenID
-	val googleOpenIdClient = new GoogleOpenIdClient()
-	    
-    val clients = new Clients(baseUrl + "/callback", facebookClient, twitterClient, formClient, basicAuthClient, casClient, saml2Client, googleOpenIdClient)
+    val clients = new Clients(baseUrl + "/callback", facebookClient, twitterClient, formClient, basicAuthClient, casClient, saml2Client)
     Config.setClients(clients)
     // for test purposes : profile timeout = 60 seconds
     // Config.setProfileTimeout(60)
