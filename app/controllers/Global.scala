@@ -13,6 +13,9 @@ import org.pac4j.openid.client._
 import org.pac4j.http.credentials._
 import play.api.mvc.Results._
 
+import org.pac4j.http.credentials.SimpleTestUsernamePasswordAuthenticator
+import org.pac4j.http.profile.UsernameProfileCreator
+
 object Global extends GlobalSettings {
 
   override def onError(request: RequestHeader, t: Throwable): Result = {
@@ -29,8 +32,8 @@ object Global extends GlobalSettings {
     val twitterClient = new TwitterClient("HVSQGAw2XmiwcKOTvZFbQ", "FSiO9G9VRR4KCuksky0kgGuo8gAVndYymr4Nl7qc8AA")
 
     // HTTP
-    val formClient = new FormClient("http://localhost:9000/theForm", new SimpleTestUsernamePasswordAuthenticator())
-    val basicAuthClient = new BasicAuthClient(new SimpleTestUsernamePasswordAuthenticator())
+    val formClient = new FormClient("http://localhost:9000/theForm", new SimpleTestUsernamePasswordAuthenticator(), new UsernameProfileCreator())
+    val basicAuthClient = new BasicAuthClient(new SimpleTestUsernamePasswordAuthenticator(), new UsernameProfileCreator())
 
     // CAS
     val casClient = new CasClient()
