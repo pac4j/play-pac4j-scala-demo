@@ -1,6 +1,6 @@
 ## What is this project ?
 
-This **play-pac4j-scala-demo** project is a Play 2.3 Scala project to test the [play-pac4j library](https://github.com/leleuj/play-pac4j) with Facebook, Twitter, form authentication, basic auth, CAS, Google OpenID...  
+This **play-pac4j-scala-demo** project is a Play 2.3 Scala project to test the [play-pac4j library](https://github.com/pac4j/play-pac4j) with Facebook, Twitter, form authentication, basic auth, CAS, Google OpenID...  
 The **play-pac4j** library is built to delegate authentication to a provider and be authenticated back in the protected application with a complete user profile retrieved from the provider.
 
 ## Live demo
