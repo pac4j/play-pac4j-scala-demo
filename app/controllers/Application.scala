@@ -8,7 +8,7 @@ import org.pac4j.play._
 import org.pac4j.play.scala._
 import play.api.libs.json.Json
 
-object Application extends ScalaController[CommonProfile] {
+class Application extends Controller with Security[CommonProfile] {
 
   def index = Action { request =>
     val newSession = getOrCreateSessionId(request)
