@@ -59,8 +59,8 @@ class Application extends Controller with Security[CommonProfile] {
     }
   }
 
-  // Setting the isAjax parameter to true will result in a 401 error response
-  // instead of redirecting to the login url.
+  // Setting the isAjax parameter is no longer necessary as AJAX requests are automatically detected:
+  // a 401 error response will be returned instead of a redirection to the login url.
   def formIndexJson = RequiresAuthentication("FormClient") { profile =>
     Action { request =>
       val content = views.html.protectedIndex.render(profile)
