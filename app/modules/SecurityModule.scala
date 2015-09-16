@@ -1,22 +1,19 @@
 package modules
 
 import com.google.inject.AbstractModule
-import controllers.DemoHttpActionHandler
+import controllers.{CustomAuthorizer, DemoHttpActionAdapter}
 import org.pac4j.cas.client.CasClient
+import org.pac4j.core.authorization.RequireAnyRoleAuthorizer
 import org.pac4j.core.client.Clients
-import org.pac4j.core.profile.UserProfile
-import org.pac4j.http.client.direct.ParameterClient
+import org.pac4j.http.client.direct.{DirectBasicAuthClient, ParameterClient}
 import org.pac4j.http.client.indirect.{FormClient, IndirectBasicAuthClient}
-import org.pac4j.http.credentials.HttpCredentials
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator
-import org.pac4j.http.profile.creator.AuthenticatorProfileCreator
-import org.pac4j.http.profile.creator.test.SimpleTestUsernameProfileCreator
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator
 import org.pac4j.oauth.client.{TwitterClient, FacebookClient}
 import org.pac4j.oidc.client.OidcClient
+import org.pac4j.play.http.HttpActionAdapter
 import org.pac4j.play.store.{DataStore, CacheStore}
 import org.pac4j.play.{ApplicationLogoutController, CallbackController}
-import org.pac4j.play.handler.{HttpActionHandler}
 import org.pac4j.saml.client.SAML2ClientConfiguration
 import play.api.{ Configuration, Environment }
 import java.io.File
@@ -39,9 +36,8 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
     val facebookClient = new FacebookClient(fbId, fbSecret)
     val twitterClient = new TwitterClient("HVSQGAw2XmiwcKOTvZFbQ", "FSiO9G9VRR4KCuksky0kgGuo8gAVndYymr4Nl7qc8AA")
     // HTTP
-    val formClient = new FormClient(baseUrl + "/theForm",
-      new SimpleTestUsernamePasswordAuthenticator(), new SimpleTestUsernameProfileCreator())
-    val basicAuthClient = new IndirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator(), new SimpleTestUsernameProfileCreator())
+    val formClient = new FormClient(baseUrl + "/theForm", new SimpleTestUsernamePasswordAuthenticator())
+    val indirectBasicAuthClient = new IndirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator())
 
     // CAS
     val casClient = new CasClient()
@@ -68,15 +64,19 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
     oidcClient.addCustomParam("prompt", "consent")
 
     // REST authent with JWT for a token passed in the url as the token parameter
-    val parameterClient = new ParameterClient("token", new JwtAuthenticator("12345678901234567890123456789012"), new AuthenticatorProfileCreator[HttpCredentials, UserProfile])
+    val parameterClient = new ParameterClient("token", new JwtAuthenticator("12345678901234567890123456789012"))
     parameterClient.setSupportGetRequest(true)
     parameterClient.setSupportPostRequest(false)
 
-    val clients = new Clients(baseUrl + "/callback", facebookClient, twitterClient, formClient,
-      basicAuthClient, casClient, saml2Client, oidcClient, parameterClient) // , casProxyReceptor);
+    // basic auth
+    val directBasicAuthClient = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator)
 
-    val config = new Config()
-    config.setClients(clients)
+    val clients = new Clients(baseUrl + "/callback", facebookClient, twitterClient, formClient,
+      indirectBasicAuthClient, casClient, saml2Client, oidcClient, parameterClient, directBasicAuthClient) // , casProxyReceptor);
+
+    val config = new Config(clients)
+    config.addAuthorizer("admin", new RequireAnyRoleAuthorizer("ROLE_ADMIN"))
+    config.addAuthorizer("custom", new CustomAuthorizer)
     bind(classOf[Config]).toInstance(config)
 
     val cacheStore = new CacheStore()
@@ -85,7 +85,7 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
     bind(classOf[DataStore]).toInstance(cacheStore)
 
     // extra HTTP action handler
-    bind(classOf[HttpActionHandler]).to(classOf[DemoHttpActionHandler])
+    bind(classOf[HttpActionAdapter]).to(classOf[DemoHttpActionAdapter])
 
     // callback
     val callbackController = new CallbackController()
