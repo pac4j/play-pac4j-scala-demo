@@ -13,7 +13,7 @@ libraryDependencies ++= Seq(
   "org.pac4j" % "pac4j-openid" % "1.8.0-SNAPSHOT",
   "org.pac4j" % "pac4j-oauth" % "1.8.0-SNAPSHOT",
   "org.pac4j" % "pac4j-saml" % "1.8.0-SNAPSHOT",
-  ("org.pac4j" % "pac4j-oidc" % "1.8.0-SNAPSHOT").exclude("com.nimbusds", "nimbus-jose-jwt"),
+  "org.pac4j" % "pac4j-oidc" % "1.8.0-SNAPSHOT",
   "org.pac4j" % "pac4j-gae" % "1.8.0-SNAPSHOT",
   "org.pac4j" % "pac4j-jwt" % "1.8.0-SNAPSHOT",
   "org.pac4j" % "pac4j-ldap" % "1.8.0-SNAPSHOT",

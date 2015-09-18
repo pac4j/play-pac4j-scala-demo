@@ -13,8 +13,8 @@
 <a href="protected/index.html">Protected url: protected/index.html</a><br />
 <br />
 <a href="jwt.html">Generate a JWT token</a><br />
-<a href="/dba/index.html">Protected url by DirectBasicAuthClient (POST the <em>Authorization</em> header with value: <em>Basic amxlbGV1OmpsZWxldQ==</em>): /dba/index.html</a>  or <a href="/dba/index.html?client_name=ParameterClient">by the ParameterClient: /dba/index.html?client_name=ParameterClient&token=<em>jwt_generated_token</em><br />
-    <a href="/rest-jwt/index.html">Protected url by ParameterClient (with JwtAuthenticator): /rest-jwt/index.html?token=<em>jwt_generated_token</em></a><br />
+<a href="/dba/index.html">Protected url by DirectBasicAuthClient (POST the <em>Authorization</em> header with value: <em>Basic amxlbGV1OmpsZWxldQ==</em>) then by ParameterClient (with request parameter: token=<em>jwt_generated_token</em>): /dba/index.html</a><br />
+<a href="/rest-jwt/index.html">Protected url by ParameterClient (with JwtAuthenticator): /rest-jwt/index.html?token=<em>jwt_generated_token</em></a><br />
 <br />
 <a href="/logout?url=/">logout</a>
 <br /><br />
