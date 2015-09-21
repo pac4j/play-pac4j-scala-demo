@@ -18,13 +18,13 @@ class Application extends Controller with Security[CommonProfile] {
     val newSession = getOrCreateSessionId(request)
     val webContext = new PlayWebContext(request, dataStore)
     val clients = config.getClients()
-    val urlFacebook = (clients.findClient("FacebookClient").asInstanceOf[FacebookClient]).getRedirectAction(webContext, false, false).getLocation;
-    val urlTwitter = (clients.findClient("TwitterClient").asInstanceOf[TwitterClient]).getRedirectAction(webContext, false, false).getLocation;
-    val urlForm = (clients.findClient("FormClient").asInstanceOf[FormClient]).getRedirectAction(webContext, false, false).getLocation;
-    val urlBA = (clients.findClient("IndirectBasicAuthClient").asInstanceOf[IndirectBasicAuthClient]).getRedirectAction(webContext, false, false).getLocation;
-    val urlCas = (clients.findClient("CasClient").asInstanceOf[CasClient]).getRedirectAction(webContext, false, false).getLocation;
-    val urlOidc = "" //(clients.findClient("OidcClient").asInstanceOf[OidcClient]).getRedirectAction(webContext, false, false).getLocation;
-    val urlSaml = "" //(clients.findClient("SAML2Client").asInstanceOf[SAML2Client]).getRedirectAction(webContext, false, false).getLocation;
+    val urlFacebook = (clients.findClient("FacebookClient").asInstanceOf[FacebookClient]).getRedirectAction(webContext, false).getLocation;
+    val urlTwitter = (clients.findClient("TwitterClient").asInstanceOf[TwitterClient]).getRedirectAction(webContext, false).getLocation;
+    val urlForm = (clients.findClient("FormClient").asInstanceOf[FormClient]).getRedirectAction(webContext, false).getLocation;
+    val urlBA = (clients.findClient("IndirectBasicAuthClient").asInstanceOf[IndirectBasicAuthClient]).getRedirectAction(webContext, false).getLocation;
+    val urlCas = (clients.findClient("CasClient").asInstanceOf[CasClient]).getRedirectAction(webContext, false).getLocation;
+    val urlOidc = (clients.findClient("OidcClient").asInstanceOf[OidcClient]).getRedirectAction(webContext, false).getLocation;
+    val urlSaml = (clients.findClient("SAML2Client").asInstanceOf[SAML2Client]).getRedirectAction(webContext, false).getLocation;
     val profile = getUserProfile(request)
     Ok(views.html.index(profile, urlFacebook, urlTwitter, urlForm, urlBA, urlCas, urlOidc, urlSaml)).withSession(newSession)
   }
@@ -35,19 +35,25 @@ class Application extends Controller with Security[CommonProfile] {
     }
   }
 
-  def facebookAdminIndex = RequiresAuthentication("FacebookClient", "ROLE_ADMIN", null) { profile =>
+  def facebookAdminIndex = RequiresAuthentication("FacebookClient", "admin") { profile =>
     Action { request =>
       Ok(views.html.protectedIndex(profile))
     }
   }
 
-  def facebookCustomIndex = RequiresAuthentication("FacebookClient", new CustomAuthorizer()) { profile =>
+  def facebookCustomIndex = RequiresAuthentication("FacebookClient", "custom") { profile =>
     Action { request =>
       Ok(views.html.protectedIndex(profile))
     }
   }
 
-  def twitterIndex = RequiresAuthentication("TwitterClient") { profile =>
+  def twitterIndex = RequiresAuthentication("TwitterClient,FacebookClient") { profile =>
+    Action { request =>
+      Ok(views.html.protectedIndex(profile))
+    }
+  }
+
+  def protectedIndex = RequiresAuthentication { profile =>
     Action { request =>
       Ok(views.html.protectedIndex(profile))
     }
@@ -70,6 +76,12 @@ class Application extends Controller with Security[CommonProfile] {
   }
 
   def basicauthIndex = RequiresAuthentication("IndirectBasicAuthClient") { profile =>
+    Action { request =>
+      Ok(views.html.protectedIndex(profile))
+    }
+  }
+
+  def dbaIndex = RequiresAuthentication("DirectBasicAuthClient,ParameterClient") { profile =>
     Action { request =>
       Ok(views.html.protectedIndex(profile))
     }

@@ -2,10 +2,10 @@ package controllers
 
 import org.pac4j.core.context.HttpConstants
 import org.pac4j.play.PlayWebContext
-import org.pac4j.play.handler.DefaultHttpActionHandler
+import org.pac4j.play.http.DefaultHttpActionAdapter
 import play.mvc.{Results, Result}
 
-class DemoHttpActionHandler extends DefaultHttpActionHandler {
+class DemoHttpActionAdapter extends DefaultHttpActionAdapter {
 
   override def handle(code: Int, context: PlayWebContext): Result = {
     if (code == HttpConstants.UNAUTHORIZED) {
