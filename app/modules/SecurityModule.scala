@@ -3,6 +3,7 @@ package modules
 import com.google.inject.AbstractModule
 import controllers.{CustomAuthorizer, DemoHttpActionAdapter}
 import org.pac4j.cas.client.CasClient
+import org.pac4j.cas.client.CasClient.CasProtocol
 import org.pac4j.core.authorization.RequireAnyRoleAuthorizer
 import org.pac4j.core.client.Clients
 import org.pac4j.http.client.direct.{DirectBasicAuthClient, ParameterClient}
@@ -11,8 +12,9 @@ import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordA
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator
 import org.pac4j.oauth.client.{TwitterClient, FacebookClient}
 import org.pac4j.oidc.client.OidcClient
+import org.pac4j.play.cas.logout.PlayCacheLogoutHandler
 import org.pac4j.play.http.HttpActionAdapter
-import org.pac4j.play.store.{DataStore, CacheStore}
+import org.pac4j.play.store.{PlayCacheStore, DataStore}
 import org.pac4j.play.{ApplicationLogoutController, CallbackController}
 import org.pac4j.saml.client.SAML2ClientConfiguration
 import play.api.{ Configuration, Environment }
@@ -39,10 +41,15 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
     val formClient = new FormClient(baseUrl + "/theForm", new SimpleTestUsernamePasswordAuthenticator())
     val indirectBasicAuthClient = new IndirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator())
 
+    val playCacheStore = new PlayCacheStore()
+    // for test purposes: profile timeout = 60 seconds
+    //cacheStore.setProfileTimeout(60)
+    bind(classOf[DataStore]).toInstance(playCacheStore)
+
     // CAS
     val casClient = new CasClient()
-    // casClient.setLogoutHandler(new PlayLogoutHandler())
-    // casClient.setCasProtocol(CasProtocol.SAML)
+    casClient.setLogoutHandler(new PlayCacheLogoutHandler(playCacheStore))
+    casClient.setCasProtocol(CasProtocol.CAS20);
     // casClient.setGateway(true)
     /*val casProxyReceptor = new CasProxyReceptor()
     casProxyReceptor.setCallbackUrl("http://localhost:9000/casProxyCallback")
@@ -78,11 +85,6 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
     config.addAuthorizer("admin", new RequireAnyRoleAuthorizer("ROLE_ADMIN"))
     config.addAuthorizer("custom", new CustomAuthorizer)
     bind(classOf[Config]).toInstance(config)
-
-    val cacheStore = new CacheStore()
-    // for test purposes: profile timeout = 60 seconds
-    //cacheStore.setProfileTimeout(60)
-    bind(classOf[DataStore]).toInstance(cacheStore)
 
     // extra HTTP action handler
     bind(classOf[HttpActionAdapter]).to(classOf[DemoHttpActionAdapter])

@@ -13,7 +13,8 @@ class CustomAuthorizer extends Authorizer[CommonProfile] {
       val httpProfile = profile.asInstanceOf[HttpProfile]
       val username: String = httpProfile.getUsername
       StringUtils.startsWith(username, "jle")
+    } else {
+      false
     }
-    false
   }
 }
