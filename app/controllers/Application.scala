@@ -16,7 +16,7 @@ class Application extends Controller with Security[CommonProfile] {
 
   def index = Action { request =>
     val newSession = getOrCreateSessionId(request)
-    val webContext = new PlayWebContext(request, dataStore)
+    val webContext = new PlayWebContext(request, config.getSessionStore)
     val clients = config.getClients()
     val urlFacebook = (clients.findClient("FacebookClient").asInstanceOf[FacebookClient]).getRedirectAction(webContext, false).getLocation;
     val urlTwitter = (clients.findClient("TwitterClient").asInstanceOf[TwitterClient]).getRedirectAction(webContext, false).getLocation;
@@ -111,9 +111,9 @@ class Application extends Controller with Security[CommonProfile] {
     }
   }
 
-  def theForm = Action { request =>
+  def loginForm = Action { request =>
     val formClient = config.getClients().findClient("FormClient").asInstanceOf[FormClient]
-    Ok(views.html.theForm.render(formClient.getCallbackUrl()))
+    Ok(views.html.loginForm.render(formClient.getCallbackUrl()))
   }
 
   def jwt = Action { request =>
