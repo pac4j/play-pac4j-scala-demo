@@ -13,7 +13,6 @@ import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator
 import org.pac4j.oauth.client.{TwitterClient, FacebookClient}
 import org.pac4j.oidc.client.OidcClient
 import org.pac4j.play.cas.logout.PlayCacheLogoutHandler
-import org.pac4j.play.http.HttpActionAdapter
 import org.pac4j.play.{ApplicationLogoutController, CallbackController}
 import org.pac4j.saml.client.SAML2ClientConfiguration
 import play.api.{ Configuration, Environment }
@@ -76,13 +75,11 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
     val config = new Config(clients)
     config.addAuthorizer("admin", new RequireAnyRoleAuthorizer("ROLE_ADMIN"))
     config.addAuthorizer("custom", new CustomAuthorizer)
+    config.setHttpActionAdapter(new DemoHttpActionAdapter())
     bind(classOf[Config]).toInstance(config)
 
     // for test purposes: profile timeout = 60 seconds
     // config.getSessionStore.asInstanceOf[PlayCacheStore].setProfileTimeout(60)
-
-    // extra HTTP action handler
-    bind(classOf[HttpActionAdapter]).to(classOf[DemoHttpActionAdapter])
 
     // callback
     val callbackController = new CallbackController()
