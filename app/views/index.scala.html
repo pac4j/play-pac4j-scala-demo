@@ -1,16 +1,22 @@
 @(profile : org.pac4j.core.profile.CommonProfile, urlFacebook: String, urlTwitter: String, urlForm: String, urlBasicAuth: String, urlCas: String, urlOidc: String, urlSaml: String)
 <h1>index</h1>
 <a href="facebook/index.html">Protected url by Facebook : facebook/index.html</a><br />
-<a href="twitter/index.html">Protected url by Twitter : twitter/index.html</a><br />
+<a href="facebookadmin/index.html">Protected url by Facebook with ROLE_ADMIN: facebookadmin/index.html</a><br />
+<a href="facebookcustom/index.html">Protected url by Facebook with custom authorizer (= must be a <em>HttpProfile</em> where the username starts with "jle"): facebookcustom/index.html</a><br />
+<a href="twitter/index.html">Protected url by Twitter: twitter/index.html</a> or <a href="twitter/index.html?client_name=FacebookClient">by Facebook: twitter/index.html?client_name=FacebookClient</a><br />
 <a href="form/index.html">Protected url by form authentication : form/index.html</a><br />
 <a href="javascript:ajaxClick();">Click here to send AJAX request after performing form authentication</a><br />
 <a href="basicauth/index.html">Protected url by basic auth : basicauth/index.html</a><br />
 <a href="cas/index.html">Protected url by CAS : cas/index.html</a><br />
 <a href="saml/index.html">Protected url by SAML : saml/index.html</a><br />
 <a href="oidc/index.html">Protected url by OpenId Connect : oidc/index.html</a><br />
-
+<a href="protected/index.html">Protected url: protected/index.html</a><br />
 <br />
-<a href="logout">logout</a>
+<a href="jwt.html">Generate a JWT token</a><br />
+<a href="/dba/index.html">Protected url by DirectBasicAuthClient (POST the <em>Authorization</em> header with value: <em>Basic amxlbGV1OmpsZWxldQ==</em>) then by ParameterClient (with request parameter: token=<em>jwt_generated_token</em>): /dba/index.html</a><br />
+<a href="/rest-jwt/index.html">Protected url by ParameterClient (with JwtAuthenticator): /rest-jwt/index.html?token=<em>jwt_generated_token</em></a><br />
+<br />
+<a href="/logout?url=/">logout</a>
 <br /><br />
 profile : @profile
 <br /><br />
@@ -25,11 +31,11 @@ profile : @profile
 
 <br />
 <br />
-<h1>Find the source code on <a target="_blank" href="https://github.com/leleuj/play-pac4j-scala-demo">https://github.com/leleuj/play-pac4j-scala-demo</a><br/>
-<br />
-See it running on Heroku: <a target="_blank" href="http://play-pac4j-scala-demo.herokuapp.com">http://play-pac4j-scala-demo.herokuapp.com</a></h2>
+<h2>Find the source code on <a target="_blank" href="https://github.com/pac4j/play-pac4j-scala-demo">https://github.com/pac4j/play-pac4j-scala-demo</a><br/>
+    <br />
+    See it running on Heroku: <a target="_blank" href="http://play-pac4j-scala-demo.herokuapp.com">http://play-pac4j-scala-demo.herokuapp.com</a></h2>
 
-<!-- Link to Google CDN's jQuery; fall back to local -->
+    <!-- Link to Google CDN's jQuery; fall back to local -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="assets/js/jquery.min.js"><\/script>')</script>
 

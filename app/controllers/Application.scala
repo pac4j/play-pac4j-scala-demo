@@ -1,8 +1,12 @@
 package controllers
 
-import play.api._
+import org.pac4j.cas.client.CasClient
+import org.pac4j.http.client.indirect.{IndirectBasicAuthClient, FormClient}
+import org.pac4j.jwt.profile.JwtGenerator
+import org.pac4j.oauth.client.{TwitterClient, FacebookClient}
+import org.pac4j.oidc.client.OidcClient
+import org.pac4j.saml.client.SAML2Client
 import play.api.mvc._
-import org.pac4j.http.client._
 import org.pac4j.core.profile._
 import org.pac4j.play._
 import org.pac4j.play.scala._
@@ -12,13 +16,15 @@ class Application extends Controller with Security[CommonProfile] {
 
   def index = Action { request =>
     val newSession = getOrCreateSessionId(request)
-    val urlFacebook = getRedirectAction(request, newSession, "FacebookClient", "/?0").getLocation()
-    val urlTwitter = getRedirectAction(request, newSession, "TwitterClient", "/?1").getLocation()
-    val urlForm = getRedirectAction(request, newSession, "FormClient", "/?2").getLocation()
-    val urlBA = getRedirectAction(request, newSession, "BasicAuthClient", "/?3").getLocation()
-    val urlCas = getRedirectAction(request, newSession, "CasClient", "/?4").getLocation()
-    val urlOidc = getRedirectAction(request, newSession, "OidcClient", "/?5").getLocation()
-    val urlSaml = getRedirectAction(request, newSession, "Saml2Client", "/?6").getLocation()
+    val webContext = new PlayWebContext(request, dataStore)
+    val clients = config.getClients()
+    val urlFacebook = (clients.findClient("FacebookClient").asInstanceOf[FacebookClient]).getRedirectAction(webContext, false).getLocation;
+    val urlTwitter = (clients.findClient("TwitterClient").asInstanceOf[TwitterClient]).getRedirectAction(webContext, false).getLocation;
+    val urlForm = (clients.findClient("FormClient").asInstanceOf[FormClient]).getRedirectAction(webContext, false).getLocation;
+    val urlBA = (clients.findClient("IndirectBasicAuthClient").asInstanceOf[IndirectBasicAuthClient]).getRedirectAction(webContext, false).getLocation;
+    val urlCas = (clients.findClient("CasClient").asInstanceOf[CasClient]).getRedirectAction(webContext, false).getLocation;
+    val urlOidc = (clients.findClient("OidcClient").asInstanceOf[OidcClient]).getRedirectAction(webContext, false).getLocation;
+    val urlSaml = (clients.findClient("SAML2Client").asInstanceOf[SAML2Client]).getRedirectAction(webContext, false).getLocation;
     val profile = getUserProfile(request)
     Ok(views.html.index(profile, urlFacebook, urlTwitter, urlForm, urlBA, urlCas, urlOidc, urlSaml)).withSession(newSession)
   }
@@ -29,7 +35,25 @@ class Application extends Controller with Security[CommonProfile] {
     }
   }
 
-  def twitterIndex = RequiresAuthentication("TwitterClient") { profile =>
+  def facebookAdminIndex = RequiresAuthentication("FacebookClient", "admin") { profile =>
+    Action { request =>
+      Ok(views.html.protectedIndex(profile))
+    }
+  }
+
+  def facebookCustomIndex = RequiresAuthentication("FacebookClient", "custom") { profile =>
+    Action { request =>
+      Ok(views.html.protectedIndex(profile))
+    }
+  }
+
+  def twitterIndex = RequiresAuthentication("TwitterClient,FacebookClient") { profile =>
+    Action { request =>
+      Ok(views.html.protectedIndex(profile))
+    }
+  }
+
+  def protectedIndex = RequiresAuthentication { profile =>
     Action { request =>
       Ok(views.html.protectedIndex(profile))
     }
@@ -41,9 +65,9 @@ class Application extends Controller with Security[CommonProfile] {
     }
   }
 
-  // Setting the isAjax parameter to true will result in a 401 error response
-  // instead of redirecting to the login url.
-  def formIndexJson = RequiresAuthentication("FormClient", "", true) { profile =>
+  // Setting the isAjax parameter is no longer necessary as AJAX requests are automatically detected:
+  // a 401 error response will be returned instead of a redirection to the login url.
+  def formIndexJson = RequiresAuthentication("FormClient") { profile =>
     Action { request =>
       val content = views.html.protectedIndex.render(profile)
       val json = Json.obj("content" -> content.toString())
@@ -51,7 +75,13 @@ class Application extends Controller with Security[CommonProfile] {
     }
   }
 
-  def basicauthIndex = RequiresAuthentication("BasicAuthClient") { profile =>
+  def basicauthIndex = RequiresAuthentication("IndirectBasicAuthClient") { profile =>
+    Action { request =>
+      Ok(views.html.protectedIndex(profile))
+    }
+  }
+
+  def dbaIndex = RequiresAuthentication("DirectBasicAuthClient,ParameterClient") { profile =>
     Action { request =>
       Ok(views.html.protectedIndex(profile))
     }
@@ -63,7 +93,7 @@ class Application extends Controller with Security[CommonProfile] {
     }
   }
   
-  def samlIndex = RequiresAuthentication("Saml2Client") { profile =>
+  def samlIndex = RequiresAuthentication("SAML2Client") { profile =>
     Action { request =>
       Ok(views.html.protectedIndex(profile))
     }
@@ -75,8 +105,24 @@ class Application extends Controller with Security[CommonProfile] {
     }
   }
 
+  def restJwtIndex = RequiresAuthentication("ParameterClient") { profile =>
+    Action { request =>
+      Ok(views.html.protectedIndex(profile))
+    }
+  }
+
   def theForm = Action { request =>
-    val formClient = Config.getClients().findClient("FormClient").asInstanceOf[FormClient]
+    val formClient = config.getClients().findClient("FormClient").asInstanceOf[FormClient]
     Ok(views.html.theForm.render(formClient.getCallbackUrl()))
+  }
+
+  def jwt = Action { request =>
+    val profile = getUserProfile(request)
+    val generator = new JwtGenerator[UserProfile]("12345678901234567890123456789012")
+    var token: String = ""
+    if (profile != null) {
+      token = generator.generate(profile)
+    }
+    Ok(views.html.jwt.render(token))
   }
 }
