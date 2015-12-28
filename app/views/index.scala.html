@@ -1,4 +1,4 @@
-@(profile : org.pac4j.core.profile.CommonProfile, urlFacebook: String, urlTwitter: String, urlForm: String, urlBasicAuth: String, urlCas: String, urlOidc: String, urlSaml: String)
+@(profile : org.pac4j.core.profile.CommonProfile)
 <h1>index</h1>
 <a href="facebook/index.html">Protected url by Facebook : facebook/index.html</a> (use a real account)<br />
 <a href="facebookadmin/index.html">Protected url by Facebook with ROLE_ADMIN: facebookadmin/index.html</a> (use a real account)<br />
@@ -20,15 +20,6 @@
 <br /><br />
 profile : @profile
 <br /><br />
-<hr />
-<a href="@urlFacebook">Authenticate with Facebook</a><br />
-<a href="@urlTwitter">Authenticate with Twitter</a><br />
-<a href="@urlForm">Authenticate with form</a><br />
-<a href="@urlBasicAuth">Authenticate with basic auth</a><br />
-<a href="@urlCas">Authenticate with CAS</a><br />
-<a href="@urlSaml">Authenticate with SAML</a><br />
-<a href="@urlOidc">Authenticate with OpenId Connect</a><br />
-
 <br />
 <br />
 <h2>Find the source code on <a target="_blank" href="https://github.com/pac4j/play-pac4j-scala-demo">https://github.com/pac4j/play-pac4j-scala-demo</a><br/>
