@@ -11,8 +11,7 @@ Build the project and launch the Play app on [http://localhost:9000](http://loca
     cd play-pac4j-scala-demo
     activator run
 
-To test, you can call a protected url by clicking on the "Protected url by **xxx**" link, which will start the authentication process with the **xxx** provider.  
-Or you can click on the "Authenticate with **xxx**" link to manually start the authentication process with the **xxx** provider.
+To test, you can call a protected url by clicking on the "Protected url by **xxx**" link, which will start the authentication process with the **xxx** provider.
 
 ## Live demo
 

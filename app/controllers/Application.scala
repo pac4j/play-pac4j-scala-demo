@@ -1,32 +1,17 @@
 package controllers
 
-import org.pac4j.cas.client.CasClient
-import org.pac4j.http.client.indirect.{IndirectBasicAuthClient, FormClient}
+import org.pac4j.http.client.indirect.FormClient
 import org.pac4j.jwt.profile.JwtGenerator
-import org.pac4j.oauth.client.{TwitterClient, FacebookClient}
-import org.pac4j.oidc.client.OidcClient
-import org.pac4j.saml.client.SAML2Client
 import play.api.mvc._
 import org.pac4j.core.profile._
-import org.pac4j.play._
 import org.pac4j.play.scala._
 import play.api.libs.json.Json
 
 class Application extends Controller with Security[CommonProfile] {
 
   def index = Action { request =>
-    val newSession = getOrCreateSessionId(request)
-    val webContext = new PlayWebContext(request, config.getSessionStore)
-    val clients = config.getClients()
-    val urlFacebook = (clients.findClient("FacebookClient").asInstanceOf[FacebookClient]).getRedirectAction(webContext, false).getLocation;
-    val urlTwitter = (clients.findClient("TwitterClient").asInstanceOf[TwitterClient]).getRedirectAction(webContext, false).getLocation;
-    val urlForm = (clients.findClient("FormClient").asInstanceOf[FormClient]).getRedirectAction(webContext, false).getLocation;
-    val urlBA = (clients.findClient("IndirectBasicAuthClient").asInstanceOf[IndirectBasicAuthClient]).getRedirectAction(webContext, false).getLocation;
-    val urlCas = (clients.findClient("CasClient").asInstanceOf[CasClient]).getRedirectAction(webContext, false).getLocation;
-    val urlOidc = (clients.findClient("OidcClient").asInstanceOf[OidcClient]).getRedirectAction(webContext, false).getLocation;
-    val urlSaml = (clients.findClient("SAML2Client").asInstanceOf[SAML2Client]).getRedirectAction(webContext, false).getLocation;
     val profile = getUserProfile(request)
-    Ok(views.html.index(profile, urlFacebook, urlTwitter, urlForm, urlBA, urlCas, urlOidc, urlSaml)).withSession(newSession)
+    Ok(views.html.index(profile))
   }
 
   def facebookIndex = RequiresAuthentication("FacebookClient") { profile =>
