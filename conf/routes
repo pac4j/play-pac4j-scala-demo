@@ -4,7 +4,7 @@
 
 # Home page
 GET         /                                 controllers.Application.index()
-GET         /theForm                          controllers.Application.theForm()
+GET         /loginForm                        controllers.Application.loginForm()
 GET         /facebook/index.html              controllers.Application.facebookIndex()
 GET         /facebookadmin/index.html         controllers.Application.facebookAdminIndex()
 GET         /facebookcustom/index.html        controllers.Application.facebookCustomIndex()
