@@ -7,7 +7,7 @@ import security.Security
 class Application2 extends Controller with Security[CommonProfile] {
 
   def protectedIndex = Action { implicit request =>
-    Ok(views.html.protectedIndex(getUserProfile))
+    Ok(views.html.protectedIndex(getUserProfile.get))
   }
 
 }

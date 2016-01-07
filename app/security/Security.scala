@@ -55,9 +55,9 @@ trait Security[P<:CommonProfile] {
     * @param request
     * @return the user profile
     */
-  protected def getUserProfile(implicit request: RequestHeader): P = {
+  protected def getUserProfile(implicit request: RequestHeader): Option[P] = {
     val webContext = new PlayWebContext(request, config.getSessionStore)
     val profileManager = new ProfileManager[P](webContext)
-    profileManager.get(true)
+    Option(profileManager.get(true))
   }
 }
