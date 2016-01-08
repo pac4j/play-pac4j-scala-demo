@@ -21,18 +21,17 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 @Singleton
 class SecurityFilter @Inject() (configuration: Configuration) extends Filter with Security[CommonProfile] {
 
-  val rules = configuration.getConfigList("security.rules").getOrElse(Collections.emptyList())
+  val rules = configuration.getConfigList("security.rules")
+    .getOrElse(Collections.emptyList())
 
   def apply(nextFilter: (RequestHeader) => Future[Result])
            (request: RequestHeader): Future[Result] = {
-    findRole(request) match {
-      case Some(role) if role == "_anonymous_" => nextFilter(request)
-      case Some(role) =>
-        val authorizerName = if (role == "_authenticated_") null else role
+    findRule(request) match {
+      case Some(rule) =>
         val webContext = new PlayWebContext(request, config.getSessionStore)
         val requiresAuthenticationAction = new RequiresAuthenticationAction(config)
         val javaContext = webContext.getJavaContext
-        requiresAuthenticationAction.internalCall(javaContext, null, authorizerName).wrapped().flatMap[play.api.mvc.Result](r =>
+        requiresAuthenticationAction.internalCall(javaContext, rule.clientNames, rule.authorizerNames).wrapped().flatMap[play.api.mvc.Result](r =>
           if (r == null) {
             nextFilter(request)
           } else {
@@ -45,10 +44,24 @@ class SecurityFilter @Inject() (configuration: Configuration) extends Filter wit
     }
   }
 
-  def findRole(request: RequestHeader): Option[String] =
+  def findRule(request: RequestHeader): Option[Rule] =
     rules.find{ rule =>
-      val key = rule.keys.toList.head
+      val key = rule.subKeys.head
       val regex = key.replace("/", "\\/").replace("\"", "")
       request.uri.toLowerCase.matches(regex)
-    }.map(r => r.getString(r.keys.toList.head).get)
+    }.flatMap(configurationToRule)
+
+  def configurationToRule(c: Configuration): Option[Rule] = {
+    c.getConfig("\"" + c.subKeys.head + "\"").flatMap{rule =>
+      val res = new Rule(rule.getString("clients").orNull, rule.getString("authorizers").orNull)
+      if (res.authorizerNames == "_anonymous_")
+        None
+      else if (res.authorizerNames == "_authenticated_")
+        Some(res.copy(authorizerNames = null))
+      else Some(res)
+    }
+  }
+
+  case class Rule(clientNames: String, authorizerNames: String)
 }
+
