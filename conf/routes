@@ -2,9 +2,12 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Home page
+# Public urls
 GET         /                                 controllers.Application.index()
 GET         /loginForm                        controllers.Application.loginForm()
+GET         /jwt.html                         controllers.Application.jwt()
+
+# URLs protected via Controller
 GET         /facebook/index.html              controllers.Application.facebookIndex()
 GET         /facebookadmin/index.html         controllers.Application.facebookAdminIndex()
 GET         /facebookcustom/index.html        controllers.Application.facebookCustomIndex()
@@ -15,12 +18,31 @@ GET         /basicauth/index.html             controllers.Application.basicauthI
 GET         /cas/index.html                   controllers.Application.casIndex()
 GET         /saml/index.html                  controllers.Application.samlIndex()
 GET         /oidc/index.html                  controllers.Application.oidcIndex()
-GET         /protected/index.html             controllers.Application2.protectedIndex()
-GET         /protected/custom.html            controllers.Application2.protectedIndex()
-GET         /jwt.html                         controllers.Application.jwt()
+GET         /protected/index.html             controllers.Application.protectedIndex()
+GET         /protected/custom.html            controllers.Application.protectedCustomIndex()
 GET         /dba/index.html                   controllers.Application.dbaIndex()
 POST        /dba/index.html                   controllers.Application.dbaIndex()
 GET         /rest-jwt/index.html              controllers.Application.restJwtIndex()
+
+# URLs protected via Filter
+GET         /filter/facebook/index.html              controllers.Application.facebookIndex()
+GET         /filter/facebookadmin/index.html         controllers.Application.facebookAdminIndex()
+GET         /filter/facebookcustom/index.html        controllers.Application.facebookCustomIndex()
+GET         /filter/twitter/index.html               controllers.Application.twitterIndex()
+GET         /filter/form/index.html                  controllers.Application.formIndex()
+GET         /filter/form/index.html.json             controllers.Application.formIndexJson()
+GET         /filter/basicauth/index.html             controllers.Application.basicauthIndex()
+GET         /filter/cas/index.html                   controllers.Application.casIndex()
+GET         /filter/saml/index.html                  controllers.Application.samlIndex()
+GET         /filter/oidc/index.html                  controllers.Application.oidcIndex()
+GET         /filter/protected/index.html             controllers.Application.protectedIndex()
+GET         /filter/protected/custom.html            controllers.Application.protectedCustomIndex()
+GET         /filter/dba/index.html                   controllers.Application.dbaIndex()
+POST        /filter/dba/index.html                   controllers.Application.dbaIndex()
+GET         /filter/rest-jwt/index.html              controllers.Application.restJwtIndex()
+
+
+# Routes necessary for play-pac4j
 GET         /callback                         @org.pac4j.play.CallbackController.callback()
 POST        /callback                         @org.pac4j.play.CallbackController.callback()
 GET         /casProxyCallback                 @org.pac4j.play.CallbackController.callback()

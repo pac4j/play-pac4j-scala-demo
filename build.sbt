@@ -7,6 +7,10 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 scalaVersion := "2.11.6"
 
 libraryDependencies ++= Seq(
+  cache,
+  ws,
+  filters,
+  specs2 % Test,
   "org.pac4j" %% "play-pac4j-scala" % "2.0.1",
   "org.pac4j" % "pac4j-http" % "1.8.3",
   "org.pac4j" % "pac4j-cas" % "1.8.3",
@@ -19,8 +23,7 @@ libraryDependencies ++= Seq(
   "org.pac4j" % "pac4j-ldap" % "1.8.3",
   "org.pac4j" % "pac4j-sql" % "1.8.3",
   "org.pac4j" % "pac4j-mongo" % "1.8.3",
-  "org.pac4j" % "pac4j-stormpath" % "1.8.3",
-  "com.typesafe.play" %  "play-cache_2.11"      % "2.4.0"
+  "org.pac4j" % "pac4j-stormpath" % "1.8.3"
 )
 
 // resolvers := Seq(Resolver.mavenLocal)

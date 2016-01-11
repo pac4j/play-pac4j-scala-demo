@@ -44,6 +44,12 @@ class Application extends Controller with Security[CommonProfile] {
     }
   }
 
+  def protectedCustomIndex = RequiresAuthentication(null, "custom") { profile =>
+    Action { request =>
+      Ok(views.html.protectedIndex(profile))
+    }
+  }
+
   def formIndex = RequiresAuthentication("FormClient") { profile =>
     Action { request =>
       Ok(views.html.protectedIndex(profile))
