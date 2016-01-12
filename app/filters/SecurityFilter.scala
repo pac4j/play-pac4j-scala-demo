@@ -47,8 +47,8 @@ class SecurityFilter @Inject() (configuration: Configuration) extends Filter wit
   def findRule(request: RequestHeader): Option[Rule] =
     rules.find{ rule =>
       val key = rule.subKeys.head
-      val regex = key.replace("/", "\\/").replace("\"", "")
-      request.uri.toLowerCase.matches(regex)
+      val regex = key.replace("\"", "")
+      request.uri.matches(regex)
     }.flatMap(configurationToRule)
 
   def configurationToRule(c: Configuration): Option[Rule] = {

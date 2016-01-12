@@ -55,8 +55,20 @@ class ApplicationSpec extends PlaySpecification {
   }
 
   "The form protected page" should {
-    "be secured" in new WithApplication(application) {
+    "be secured and redirects to the loginForm" in new WithApplication(application) {
       checkRedirect("/form/index.html", "loginForm")
+    }
+  }
+
+//  "The form json protected page" should {
+//    "be secured and sends a 401" in new WithApplication(application) {
+//
+//    }
+//  }
+
+  "The basic auth protected page" should {
+    "be secured and redirect to callback url for basic auth" in new WithApplication(application) {
+      checkRedirect("/basicauth/index.html", "callback")
     }
   }
 
