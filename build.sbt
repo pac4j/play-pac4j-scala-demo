@@ -7,11 +7,12 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 scalaVersion := "2.11.6"
 
 libraryDependencies ++= Seq(
+<<<<<<< HEAD
   cache,
   ws,
   filters,
   specs2 % Test,
-  "org.pac4j" %% "play-pac4j-scala" % "2.0.1",
+  "org.pac4j" % "play-pac4j" % "2.1.0-SNAPSHOT",
   "org.pac4j" % "pac4j-http" % "1.8.3",
   "org.pac4j" % "pac4j-cas" % "1.8.3",
   "org.pac4j" % "pac4j-openid" % "1.8.3",
