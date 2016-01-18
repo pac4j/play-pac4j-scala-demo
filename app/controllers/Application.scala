@@ -4,13 +4,13 @@ import org.pac4j.http.client.indirect.FormClient
 import org.pac4j.jwt.profile.JwtGenerator
 import play.api.mvc._
 import org.pac4j.core.profile._
-import org.pac4j.play.scala._
+import org.pac4j.play._
 import play.api.libs.json.Json
 
 class Application extends Controller with Security[CommonProfile] {
 
   def index = Action { request =>
-    val profile = getUserProfile(request)
+    val profile = getUserProfile(request).orNull
     Ok(views.html.index(profile))
   }
 
@@ -108,7 +108,7 @@ class Application extends Controller with Security[CommonProfile] {
   }
 
   def jwt = Action { request =>
-    val profile = getUserProfile(request)
+    val profile = getUserProfile(request).orNull
     val generator = new JwtGenerator[UserProfile]("12345678901234567890123456789012")
     var token: String = ""
     if (profile != null) {

@@ -2,6 +2,7 @@ package filters
 
 import javax.inject.Inject
 
+import org.pac4j.play.filters.SecurityFilter
 import play.api.http.HttpFilters
 
 /**
