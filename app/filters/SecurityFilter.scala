@@ -3,17 +3,17 @@ package filters
 import java.util.Collections
 import javax.inject.{Inject, Singleton}
 
+import org.pac4j.core.profile.CommonProfile
 import org.pac4j.play.PlayWebContext
 import org.pac4j.play.java.RequiresAuthenticationAction
-import play.api.Configuration
-import play.core.j.JavaHelpers
-import security.Security
-import org.pac4j.core.profile.CommonProfile
-import play.api.mvc._
-import scala.collection.JavaConversions._
-
-import scala.concurrent.Future
+import org.pac4j.play.scala.Security
+import play.api.{Logger, Configuration}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import play.api.mvc._
+import play.core.j.JavaHelpers
+
+import scala.collection.JavaConversions._
+import scala.concurrent.Future
 
 /**
   * Filter on all requests to apply security by the Pac4J framework.
@@ -64,13 +64,16 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 @Singleton
 class SecurityFilter @Inject()(configuration: Configuration) extends Filter with Security[CommonProfile] {
 
+  val log = Logger(this.getClass)
+
   val rules = configuration.getConfigList("security.rules")
     .getOrElse(Collections.emptyList())
 
-  def apply(nextFilter: (RequestHeader) => Future[Result])
-           (request: RequestHeader): Future[Result] = {
+  override def apply(nextFilter: (RequestHeader) => Future[Result])
+                    (request: RequestHeader): Future[Result] = {
     findRule(request) match {
       case Some(rule) =>
+        log.debug(s"Authentication needed for ${request.uri}")
         val webContext = new PlayWebContext(request, config.getSessionStore)
         val requiresAuthenticationAction = new RequiresAuthenticationAction(config)
         val javaContext = webContext.getJavaContext
@@ -79,11 +82,14 @@ class SecurityFilter @Inject()(configuration: Configuration) extends Filter with
             nextFilter(request)
           } else {
             Future {
+              log.info(s"Authentication failed for ${request.uri} with clients ${rule.clientNames} and authorizers ${rule.authorizerNames}")
               JavaHelpers.createResult(javaContext, r)
             }
           }
         )
-      case None => nextFilter(request)
+      case None =>
+        log.debug(s"No authentication needed for ${request.uri}")
+        nextFilter(request)
     }
   }
 

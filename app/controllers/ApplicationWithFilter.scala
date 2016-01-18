@@ -15,59 +15,63 @@ class ApplicationWithFilter extends Controller with Security[CommonProfile] {
   }
 
   def facebookIndex = Action { implicit request =>
-      Ok(views.html.protectedIndex(getUserProfile.get))
+    Ok(views.html.protectedIndex(getUserProfile.get))
   }
 
   def facebookAdminIndex = Action { implicit request =>
-      Ok(views.html.protectedIndex(getUserProfile.get))
+    Ok(views.html.protectedIndex(getUserProfile.get))
   }
 
   def facebookCustomIndex = Action { implicit request =>
-      Ok(views.html.protectedIndex(getUserProfile.get))
+    Ok(views.html.protectedIndex(getUserProfile.get))
   }
 
   def twitterIndex = Action { implicit request =>
-      Ok(views.html.protectedIndex(getUserProfile.get))
+    Ok(views.html.protectedIndex(getUserProfile.get))
   }
 
   def protectedIndex = Action { implicit request =>
-      Ok(views.html.protectedIndex(getUserProfile.get))
+    Ok(views.html.protectedIndex(getUserProfile.get))
+  }
+
+  def protectedCustomIndex = Action { implicit request =>
+    Ok(views.html.protectedIndex(getUserProfile.get))
   }
 
   def formIndex = Action { implicit request =>
-      Ok(views.html.protectedIndex(getUserProfile.get))
+    Ok(views.html.protectedIndex(getUserProfile.get))
   }
 
   // Setting the isAjax parameter is no longer necessary as AJAX requests are automatically detected:
   // a 401 error response will be returned instead of a redirection to the login url.
   def formIndexJson = Action { implicit request =>
-      val content = views.html.protectedIndex.render(getUserProfile.get)
-      val json = Json.obj("content" -> content.toString())
-      Ok(json).as("application/json")
+    val content = views.html.protectedIndex.render(getUserProfile.get)
+    val json = Json.obj("content" -> content.toString())
+    Ok(json).as("application/json")
   }
 
   def basicauthIndex = Action { implicit request =>
-      Ok(views.html.protectedIndex(getUserProfile.get))
+    Ok(views.html.protectedIndex(getUserProfile.get))
   }
 
   def dbaIndex = Action { implicit request =>
-      Ok(views.html.protectedIndex(getUserProfile.get))
+    Ok(views.html.protectedIndex(getUserProfile.get))
   }
 
   def casIndex = Action { implicit request =>
-      Ok(views.html.protectedIndex(getUserProfile.get))
+    Ok(views.html.protectedIndex(getUserProfile.get))
   }
 
   def samlIndex = Action { implicit request =>
-      Ok(views.html.protectedIndex(getUserProfile.get))
+    Ok(views.html.protectedIndex(getUserProfile.get))
   }
 
   def oidcIndex = Action { implicit request =>
-      Ok(views.html.protectedIndex(getUserProfile.get))
+    Ok(views.html.protectedIndex(getUserProfile.get))
   }
 
   def restJwtIndex = Action { implicit request =>
-      Ok(views.html.protectedIndex(getUserProfile.get))
+    Ok(views.html.protectedIndex(getUserProfile.get))
   }
 
   def loginForm = Action { implicit request =>
