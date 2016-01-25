@@ -4,13 +4,13 @@ import org.pac4j.http.client.indirect.FormClient
 import org.pac4j.jwt.profile.JwtGenerator
 import play.api.mvc._
 import org.pac4j.core.profile._
-import org.pac4j.play._
+import org.pac4j.play.scala.Security
 import play.api.libs.json.Json
 
 class Application extends Controller with Security[CommonProfile] {
 
-  def index = Action { request =>
-    val profile = getUserProfile(request).orNull
+  def index = Action { implicit request =>
+    val profile = getUserProfile.orNull
     Ok(views.html.index(profile))
   }
 
