@@ -15,3 +15,6 @@ dist
 /RUNNING_PID
 .settings
 .target
+.sbtserver
+*.lock
+*.sbt

@@ -10,7 +10,7 @@ import play.api.libs.json.Json
 class Application extends Controller with Security[CommonProfile] {
 
   def index = Action { request =>
-    val profile = getUserProfile(request)
+    val profile = getUserProfile(request).getOrElse(null)
     Ok(views.html.index(profile))
   }
 
@@ -102,7 +102,7 @@ class Application extends Controller with Security[CommonProfile] {
   }
 
   def jwt = Action { request =>
-    val profile = getUserProfile(request)
+    val profile = getUserProfile(request).getOrElse(null)
     val generator = new JwtGenerator[UserProfile]("12345678901234567890123456789012")
     var token: String = ""
     if (profile != null) {
