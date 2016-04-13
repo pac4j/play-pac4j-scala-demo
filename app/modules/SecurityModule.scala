@@ -4,19 +4,20 @@ import com.google.inject.AbstractModule
 import controllers.{CustomAuthorizer, DemoHttpActionAdapter}
 import org.pac4j.cas.client.CasClient
 import org.pac4j.cas.client.CasClient.CasProtocol
-import org.pac4j.core.authorization.RequireAnyRoleAuthorizer
 import org.pac4j.core.client.Clients
 import org.pac4j.http.client.direct.{DirectBasicAuthClient, ParameterClient}
 import org.pac4j.http.client.indirect.{FormClient, IndirectBasicAuthClient}
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator
-import org.pac4j.oauth.client.{TwitterClient, FacebookClient}
+import org.pac4j.oauth.client.{FacebookClient, TwitterClient}
 import org.pac4j.oidc.client.OidcClient
 import org.pac4j.play.cas.logout.PlayCacheLogoutHandler
 import org.pac4j.play.{ApplicationLogoutController, CallbackController}
 import org.pac4j.saml.client.SAML2ClientConfiguration
-import play.api.{ Configuration, Environment }
+import play.api.{Configuration, Environment}
 import java.io.File
+
+import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer
 import org.pac4j.core.config.Config
 import org.pac4j.saml.client.SAML2Client
 
@@ -73,7 +74,7 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
       indirectBasicAuthClient, casClient, saml2Client, oidcClient, parameterClient, directBasicAuthClient) // , casProxyReceptor);
 
     val config = new Config(clients)
-    config.addAuthorizer("admin", new RequireAnyRoleAuthorizer("ROLE_ADMIN"))
+    config.addAuthorizer("admin", new RequireAnyRoleAuthorizer[Nothing]("ROLE_ADMIN"))
     config.addAuthorizer("custom", new CustomAuthorizer)
     config.setHttpActionAdapter(new DemoHttpActionAdapter())
     bind(classOf[Config]).toInstance(config)
@@ -83,7 +84,7 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
 
     // callback
     val callbackController = new CallbackController()
-    callbackController.setDefaultUrl("/")
+    callbackController.setDefaultUrl("/?defaulturlafterlogout")
     bind(classOf[CallbackController]).toInstance(callbackController)
 
     // logout

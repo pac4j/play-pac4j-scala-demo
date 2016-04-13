@@ -1,20 +1,21 @@
 package controllers
 
 import org.apache.commons.lang3.StringUtils
-import org.pac4j.core.authorization.Authorizer
+import org.pac4j.core.authorization.authorizer.ProfileAuthorizer
 import org.pac4j.core.context.WebContext
 import org.pac4j.core.profile.CommonProfile
-import org.pac4j.http.profile.HttpProfile
 
-class CustomAuthorizer extends Authorizer[CommonProfile] {
+class CustomAuthorizer extends ProfileAuthorizer[CommonProfile] {
 
-  def isAuthorized(context: WebContext, profile: CommonProfile): Boolean = {
-    if (profile != null && profile.isInstanceOf[HttpProfile]) {
-      val httpProfile = profile.asInstanceOf[HttpProfile]
-      val username: String = httpProfile.getUsername
-      StringUtils.startsWith(username, "jle")
-    } else {
+  def isAuthorized(context: WebContext, profiles: java.util.List[CommonProfile]): Boolean = {
+    return isAnyAuthorized(context, profiles)
+  }
+
+  def isProfileAuthorized(context: WebContext, profile: CommonProfile): Boolean = {
+    if (profile == null) {
       false
+    } else {
+      StringUtils.startsWith (profile.getUsername, "jle")
     }
   }
 }
