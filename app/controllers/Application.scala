@@ -1,98 +1,111 @@
 package controllers
 
+import org.pac4j.core.client.{Clients, IndirectClient}
 import org.pac4j.http.client.indirect.FormClient
 import org.pac4j.jwt.profile.JwtGenerator
 import play.api.mvc._
 import org.pac4j.core.profile._
+import org.pac4j.core.util.CommonHelper
+import org.pac4j.play.PlayWebContext
 import org.pac4j.play.scala._
 import play.api.libs.json.Json
+import org.pac4j.core.credentials.Credentials
+
+import scala.collection.JavaConversions._
 
 class Application extends Controller with Security[CommonProfile] {
 
+  private def getProfiles(implicit request: RequestHeader): List[CommonProfile] = {
+    val webContext = new PlayWebContext(request, config.getSessionStore)
+    val profileManager = new ProfileManager[CommonProfile](webContext)
+    val profiles = profileManager.getAll(true)
+    asScalaBuffer(profiles).toList
+  }
+
   def index = Action { request =>
-    val profile = getUserProfile(request).getOrElse(null)
-    Ok(views.html.index(profile))
+    val profiles = getProfiles(request)
+    Ok(views.html.index(profiles))
   }
 
-  def facebookIndex = RequiresAuthentication("FacebookClient") { profile =>
+  def facebookIndex = Secure("FacebookClient") { profiles =>
     Action { request =>
-      Ok(views.html.protectedIndex(profile))
+      Ok(views.html.protectedIndex(profiles))
     }
   }
 
-  def facebookAdminIndex = RequiresAuthentication("FacebookClient", "admin") { profile =>
+  def facebookAdminIndex = Secure("FacebookClient", "admin") { profiles =>
     Action { request =>
-      Ok(views.html.protectedIndex(profile))
+      Ok(views.html.protectedIndex(profiles))
     }
   }
 
-  def facebookCustomIndex = RequiresAuthentication("FacebookClient", "custom") { profile =>
+  def facebookCustomIndex = Secure("FacebookClient", "custom") { profiles =>
     Action { request =>
-      Ok(views.html.protectedIndex(profile))
+      Ok(views.html.protectedIndex(profiles))
     }
   }
 
-  def twitterIndex = RequiresAuthentication("TwitterClient,FacebookClient") { profile =>
+  def twitterIndex = Secure("TwitterClient,FacebookClient") { profiles =>
     Action { request =>
-      Ok(views.html.protectedIndex(profile))
+      Ok(views.html.protectedIndex(profiles))
     }
   }
 
-  def protectedIndex = RequiresAuthentication { profile =>
+  def protectedIndex = Secure { profiles =>
     Action { request =>
-      Ok(views.html.protectedIndex(profile))
+      Ok(views.html.protectedIndex(profiles))
     }
   }
 
-  def formIndex = RequiresAuthentication("FormClient") { profile =>
+  def formIndex = Secure("FormClient") { profiles =>
     Action { request =>
-      Ok(views.html.protectedIndex(profile))
+      Ok(views.html.protectedIndex(profiles))
     }
   }
 
   // Setting the isAjax parameter is no longer necessary as AJAX requests are automatically detected:
   // a 401 error response will be returned instead of a redirection to the login url.
-  def formIndexJson = RequiresAuthentication("FormClient") { profile =>
+  def formIndexJson = Secure("FormClient") { profiles =>
     Action { request =>
-      val content = views.html.protectedIndex.render(profile)
+      val content = views.html.protectedIndex.render(profiles)
       val json = Json.obj("content" -> content.toString())
       Ok(json).as("application/json")
     }
   }
 
-  def basicauthIndex = RequiresAuthentication("IndirectBasicAuthClient") { profile =>
+  def basicauthIndex = Secure("IndirectBasicAuthClient") { profiles =>
     Action { request =>
-      Ok(views.html.protectedIndex(profile))
+      Ok(views.html.protectedIndex(profiles))
     }
   }
 
-  def dbaIndex = RequiresAuthentication("DirectBasicAuthClient,ParameterClient") { profile =>
+  def dbaIndex = Secure("DirectBasicAuthClient,ParameterClient") { profiles =>
     Action { request =>
-      Ok(views.html.protectedIndex(profile))
+      Ok(views.html.protectedIndex(profiles))
     }
   }
 
-  def casIndex = RequiresAuthentication("CasClient") { profile =>
+  def casIndex = Secure("CasClient") { profiles =>
     Action { request =>
-      Ok(views.html.protectedIndex(profile))
+      Ok(views.html.protectedIndex(profiles))
     }
   }
   
-  def samlIndex = RequiresAuthentication("SAML2Client") { profile =>
+  def samlIndex = Secure("SAML2Client") { profiles =>
     Action { request =>
-      Ok(views.html.protectedIndex(profile))
+      Ok(views.html.protectedIndex(profiles))
     }
   }
 
-  def oidcIndex = RequiresAuthentication("OidcClient") { profile =>
+  def oidcIndex = Secure("OidcClient") { profiles =>
     Action { request =>
-      Ok(views.html.protectedIndex(profile))
+      Ok(views.html.protectedIndex(profiles))
     }
   }
 
-  def restJwtIndex = RequiresAuthentication("ParameterClient") { profile =>
+  def restJwtIndex = Secure("ParameterClient") { profiles =>
     Action { request =>
-      Ok(views.html.protectedIndex(profile))
+      Ok(views.html.protectedIndex(profiles))
     }
   }
 
@@ -102,12 +115,18 @@ class Application extends Controller with Security[CommonProfile] {
   }
 
   def jwt = Action { request =>
-    val profile = getUserProfile(request).getOrElse(null)
-    val generator = new JwtGenerator[UserProfile]("12345678901234567890123456789012")
+    val profiles = getProfiles(request)
+    val generator = new JwtGenerator[CommonProfile]("12345678901234567890123456789012")
     var token: String = ""
-    if (profile != null) {
-      token = generator.generate(profile)
+    if (CommonHelper.isNotEmpty(profiles)) {
+      token = generator.generate(profiles.get(0))
     }
     Ok(views.html.jwt.render(token))
+  }
+
+  def forceLogin = Action { request =>
+    val context: PlayWebContext = new PlayWebContext(request, config.getSessionStore)
+    val client = config.getClients.findClient(context.getRequestParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER)).asInstanceOf[IndirectClient[Credentials,CommonProfile]]
+    Redirect(client.getRedirectAction(context).getLocation)
   }
 }
