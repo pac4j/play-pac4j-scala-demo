@@ -1,6 +1,7 @@
 package controllers
 
 import org.pac4j.core.client.{Clients, IndirectClient}
+import org.pac4j.core.context.session.SessionStore
 import org.pac4j.http.client.indirect.FormClient
 import org.pac4j.jwt.profile.JwtGenerator
 import play.api.mvc._
@@ -16,7 +17,7 @@ import scala.collection.JavaConversions._
 class Application extends Controller with Security[CommonProfile] {
 
   private def getProfiles(implicit request: RequestHeader): List[CommonProfile] = {
-    val webContext = new PlayWebContext(request, config.getSessionStore)
+    val webContext = new PlayWebContext(request, config.getSessionStore.asInstanceOf[SessionStore[PlayWebContext]])
     val profileManager = new ProfileManager[CommonProfile](webContext)
     val profiles = profileManager.getAll(true)
     asScalaBuffer(profiles).toList
@@ -125,7 +126,7 @@ class Application extends Controller with Security[CommonProfile] {
   }
 
   def forceLogin = Action { request =>
-    val context: PlayWebContext = new PlayWebContext(request, config.getSessionStore)
+    val context: PlayWebContext = new PlayWebContext(request, config.getSessionStore.asInstanceOf[SessionStore[PlayWebContext]])
     val client = config.getClients.findClient(context.getRequestParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER)).asInstanceOf[IndirectClient[Credentials,CommonProfile]]
     Redirect(client.getRedirectAction(context).getLocation)
   }

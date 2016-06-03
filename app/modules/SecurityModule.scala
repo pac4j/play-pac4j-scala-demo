@@ -85,6 +85,7 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
     // callback
     val callbackController = new CallbackController()
     callbackController.setDefaultUrl("/?defaulturlafterlogout")
+    callbackController.setMultiProfile(true)
     bind(classOf[CallbackController]).toInstance(callbackController)
 
     // logout
