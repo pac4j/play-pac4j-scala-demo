@@ -43,6 +43,7 @@ GET         /filter/rest-jwt/index.html              controllers.ApplicationWith
 
 
 # Routes necessary for play-pac4j
+GET         /forceLogin                       controllers.Application.forceLogin()
 GET         /callback                         @org.pac4j.play.CallbackController.callback()
 POST        /callback                         @org.pac4j.play.CallbackController.callback()
 GET         /casProxyCallback                 @org.pac4j.play.CallbackController.callback()
