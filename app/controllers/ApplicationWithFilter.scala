@@ -1,77 +1,89 @@
 package controllers
 
-import org.pac4j.core.profile.{UserProfile, CommonProfile}
+import org.pac4j.core.context.session.SessionStore
+import org.pac4j.core.profile.{ProfileManager, UserProfile, CommonProfile}
+import org.pac4j.core.util.CommonHelper
 import org.pac4j.http.client.indirect.FormClient
 import org.pac4j.jwt.profile.JwtGenerator
+import org.pac4j.play.PlayWebContext
 import org.pac4j.play.scala.Security
 import play.api.libs.json.Json
 import play.api.mvc._
 
+import scala.collection.JavaConversions._
+
 class ApplicationWithFilter extends Controller with Security[CommonProfile] {
 
+  private def getProfiles(implicit request: RequestHeader): List[CommonProfile] = {
+    val webContext = new PlayWebContext(request, config.getSessionStore.asInstanceOf[SessionStore[PlayWebContext]])
+    val profileManager = new ProfileManager[CommonProfile](webContext)
+    val profiles = profileManager.getAll(true)
+    asScalaBuffer(profiles).toList
+  }
+
   def index = Action { implicit request =>
-    val profile = getUserProfile.orNull
+    val profile = getProfiles(request)
     Ok(views.html.index(profile))
   }
 
   def facebookIndex = Action { implicit request =>
-    Ok(views.html.protectedIndex(getUserProfile.get))
+    Ok(views.html.protectedIndex(getProfiles(request)))
   }
 
   def facebookAdminIndex = Action { implicit request =>
-    Ok(views.html.protectedIndex(getUserProfile.get))
+    Ok(views.html.protectedIndex(getProfiles(request)))
   }
 
   def facebookCustomIndex = Action { implicit request =>
-    Ok(views.html.protectedIndex(getUserProfile.get))
+    Ok(views.html.protectedIndex(getProfiles(request)))
   }
 
   def twitterIndex = Action { implicit request =>
-    Ok(views.html.protectedIndex(getUserProfile.get))
+    Ok(views.html.protectedIndex(getProfiles(request)))
   }
 
   def protectedIndex = Action { implicit request =>
-    Ok(views.html.protectedIndex(getUserProfile.get))
+    Ok(views.html.protectedIndex(getProfiles(request)))
   }
 
   def protectedCustomIndex = Action { implicit request =>
-    Ok(views.html.protectedIndex(getUserProfile.get))
+    Ok(views.html.protectedIndex(getProfiles(request)))
   }
 
   def formIndex = Action { implicit request =>
-    Ok(views.html.protectedIndex(getUserProfile.get))
+    Ok(views.html.protectedIndex(getProfiles(request)))
   }
 
   // Setting the isAjax parameter is no longer necessary as AJAX requests are automatically detected:
   // a 401 error response will be returned instead of a redirection to the login url.
   def formIndexJson = Action { implicit request =>
-    val content = views.html.protectedIndex.render(getUserProfile.get)
+    val content = views.html.protectedIndex.render(getProfiles(request))
     val json = Json.obj("content" -> content.toString())
     Ok(json).as("application/json")
   }
 
   def basicauthIndex = Action { implicit request =>
-    Ok(views.html.protectedIndex(getUserProfile.get))
+    Ok(views.html.protectedIndex(getProfiles(request)))
   }
 
   def dbaIndex = Action { implicit request =>
-    Ok(views.html.protectedIndex(getUserProfile.get))
+    Ok(views.html.protectedIndex(getProfiles(request)))
   }
 
   def casIndex = Action { implicit request =>
-    Ok(views.html.protectedIndex(getUserProfile.get))
+    Ok(views.html.protectedIndex(getProfiles(request)))
   }
 
   def samlIndex = Action { implicit request =>
-    Ok(views.html.protectedIndex(getUserProfile.get))
+    Ok(views.html.protectedIndex(getProfiles(request)))
   }
 
   def oidcIndex = Action { implicit request =>
-    Ok(views.html.protectedIndex(getUserProfile.get))
+    Ok(views.html.protectedIndex(getProfiles(request)))
   }
 
   def restJwtIndex = Action { implicit request =>
-    Ok(views.html.protectedIndex(getUserProfile.get))
+    Ok(views.html.protectedIndex(getProfiles(request)))
   }
 
   def loginForm = Action { implicit request =>
@@ -80,11 +92,11 @@ class ApplicationWithFilter extends Controller with Security[CommonProfile] {
   }
 
   def jwt = Action { implicit request =>
-    val profile = getUserProfile(request).orNull
-    val generator = new JwtGenerator[UserProfile]("12345678901234567890123456789012")
+    val profiles = getProfiles(request)
+    val generator = new JwtGenerator[CommonProfile]("12345678901234567890123456789012")
     var token: String = ""
-    if (profile != null) {
-      token = generator.generate(profile)
+    if (CommonHelper.isNotEmpty(profiles)) {
+      token = generator.generate(profiles.get(0))
     }
     Ok(views.html.jwt.render(token))
   }
