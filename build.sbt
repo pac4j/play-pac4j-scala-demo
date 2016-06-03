@@ -28,7 +28,7 @@ libraryDependencies ++= Seq(
   "commons-io" % "commons-io" % "2.4"
 )
 
-resolvers ++= Seq(Resolver.mavenLocal, "Sonatype snapshots repository" at "https://oss.sonatype.org/content/repositories/snapshots/")
+resolvers ++= Seq(Resolver.mavenLocal, "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases", "Sonatype snapshots repository" at "https://oss.sonatype.org/content/repositories/snapshots/")
 
 routesGenerator := InjectedRoutesGenerator
 
