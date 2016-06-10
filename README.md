@@ -2,7 +2,7 @@
   <img src="https://pac4j.github.io/pac4j/img/logo-play.png" width="300" />
 </p>
 
-This `play-pac4j-scala-demo` project [![Build Status](https://travis-ci.org/pac4j/play-pac4j-scala-demo.png?branch=master)](https://travis-ci.org/pac4j/play-pac4j-scala-demo) is a Scala Play framework web app to test the [play-pac4j-scala_2.11](https://github.com/pac4j/play-pac4j) security library with various authentication mechanisms: Facebook, Twitter, form, basic auth, CAS, SAML, OpenID Connect, JWT...
+This `play-pac4j-scala-demo` project [![Build Status](https://travis-ci.org/pac4j/play-pac4j-scala-demo.png?branch=2.3.x)](https://travis-ci.org/pac4j/play-pac4j-scala-demo) is a Scala Play framework web app to test the [play-pac4j-scala_2.11](https://github.com/pac4j/play-pac4j) security library with various authentication mechanisms: Facebook, Twitter, form, basic auth, CAS, SAML, OpenID Connect, JWT...
 
 
 ## Start & test
