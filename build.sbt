@@ -1,6 +1,6 @@
 name := "play-pac4j-scala-demo"
 
-version := "2.3.0-SNAPSHOT"
+version := "2.4.0-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
@@ -11,7 +11,7 @@ libraryDependencies ++= Seq(
   ws,
   filters,
   specs2 % Test,
-  "org.pac4j" % "play-pac4j" % "2.3.0",
+  "org.pac4j" % "play-pac4j" % "2.4.0-SNAPSHOT",
   "org.pac4j" % "pac4j-http" % "1.9.0",
   "org.pac4j" % "pac4j-cas" % "1.9.0",
   "org.pac4j" % "pac4j-openid" % "1.9.0" exclude("xml-apis" , "xml-apis"),
