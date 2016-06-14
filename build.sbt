@@ -24,7 +24,7 @@ libraryDependencies ++= Seq(
   "org.pac4j" % "pac4j-sql" % "1.9.0",
   "org.pac4j" % "pac4j-mongo" % "1.9.0",
   "org.pac4j" % "pac4j-stormpath" % "1.9.0",
-  "com.typesafe.play" % "play-cache_2.11" % "2.4.6",
+  "com.typesafe.play" % "play-cache_2.11" % "2.5.4",
   "commons-io" % "commons-io" % "2.4"
 )
 
