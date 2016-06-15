@@ -11,14 +11,16 @@ import play.api.test.{FakeRequest, WithApplication, PlaySpecification}
 class HomePageSpec extends PlaySpecification {
   val configuration = Configuration.load(Environment.simple())
 
-  val application = new GuiceApplicationBuilder()
+  def application = {
+    new GuiceApplicationBuilder()
     .loadConfig(configuration)
     .overrides(bind[CacheApi].to[FakeCache])
     .in(Environment.simple()).build()
+  }
 
   "The homepage" should {
     "not be secured" in new WithApplication(application) {
-      val resp = route(FakeRequest(GET, "/")).get
+      val resp = route(app, FakeRequest(GET, "/")).get
       status(resp) must equalTo(OK)
       contentType(resp) must beSome.which(_ == "text/html")
       contentAsString(resp) must contain("<h1>index</h1>")
