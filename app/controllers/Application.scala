@@ -1,7 +1,6 @@
 package controllers
 
 import org.pac4j.core.client.{Clients, IndirectClient}
-import org.pac4j.core.context.session.SessionStore
 import org.pac4j.http.client.indirect.FormClient
 import org.pac4j.jwt.profile.JwtGenerator
 import play.api.mvc._
@@ -11,13 +10,17 @@ import org.pac4j.play.PlayWebContext
 import org.pac4j.play.scala._
 import play.api.libs.json.Json
 import org.pac4j.core.credentials.Credentials
+import javax.inject.Inject
+
+import org.pac4j.core.config.Config
+import org.pac4j.play.store.PlaySessionStore
 
 import scala.collection.JavaConversions._
 
-class Application extends Controller with Security[CommonProfile] {
+class Application @Inject() (val config: Config, val playSessionStore: PlaySessionStore) extends Controller with Security[CommonProfile] {
 
   private def getProfiles(implicit request: RequestHeader): List[CommonProfile] = {
-    val webContext = new PlayWebContext(request, config.getSessionStore.asInstanceOf[SessionStore[PlayWebContext]])
+    val webContext = new PlayWebContext(request, playSessionStore)
     val profileManager = new ProfileManager[CommonProfile](webContext)
     val profiles = profileManager.getAll(true)
     asScalaBuffer(profiles).toList
@@ -117,8 +120,8 @@ class Application extends Controller with Security[CommonProfile] {
   }
 
   def loginForm = Action { request =>
-    val formClient = config.getClients().findClient("FormClient").asInstanceOf[FormClient]
-    Ok(views.html.loginForm.render(formClient.getCallbackUrl()))
+    val formClient = config.getClients.findClient("FormClient").asInstanceOf[FormClient]
+    Ok(views.html.loginForm.render(formClient.getCallbackUrl))
   }
 
   def jwt = Action { request =>
@@ -132,7 +135,7 @@ class Application extends Controller with Security[CommonProfile] {
   }
 
   def forceLogin = Action { request =>
-    val context: PlayWebContext = new PlayWebContext(request, config.getSessionStore.asInstanceOf[SessionStore[PlayWebContext]])
+    val context: PlayWebContext = new PlayWebContext(request, playSessionStore)
     val client = config.getClients.findClient(context.getRequestParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER)).asInstanceOf[IndirectClient[Credentials,CommonProfile]]
     Redirect(client.getRedirectAction(context).getLocation)
   }
