@@ -10,7 +10,7 @@ This `play-pac4j-scala-demo` project [![Build Status](https://travis-ci.org/pac4
 Build the project and launch the Play app on [http://localhost:9000](http://localhost:9000):
 
     cd play-pac4j-scala-demo
-    activator run
+    bin\activator run
 
 To test, you can call a protected url by clicking on the "Protected url by **xxx**" link, which will start the authentication process with the **xxx** provider.
 

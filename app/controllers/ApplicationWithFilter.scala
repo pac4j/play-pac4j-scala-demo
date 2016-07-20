@@ -1,21 +1,24 @@
 package controllers
 
-import org.pac4j.core.context.session.SessionStore
-import org.pac4j.core.profile.{ProfileManager, UserProfile, CommonProfile}
+import org.pac4j.core.profile.{CommonProfile, ProfileManager, UserProfile}
 import org.pac4j.core.util.CommonHelper
 import org.pac4j.http.client.indirect.FormClient
 import org.pac4j.jwt.profile.JwtGenerator
 import org.pac4j.play.PlayWebContext
 import org.pac4j.play.scala.Security
 import play.api.libs.json.Json
+import javax.inject.Inject
+
+import org.pac4j.core.config.Config
+import org.pac4j.play.store.PlaySessionStore
 import play.api.mvc._
 
 import scala.collection.JavaConversions._
 
-class ApplicationWithFilter extends Controller with Security[CommonProfile] {
+class ApplicationWithFilter @Inject() (val config: Config, val playSessionStore: PlaySessionStore) extends Controller with Security[CommonProfile] {
 
   private def getProfiles(implicit request: RequestHeader): List[CommonProfile] = {
-    val webContext = new PlayWebContext(request, config.getSessionStore.asInstanceOf[SessionStore[PlayWebContext]])
+    val webContext = new PlayWebContext(request, playSessionStore)
     val profileManager = new ProfileManager[CommonProfile](webContext)
     val profiles = profileManager.getAll(true)
     asScalaBuffer(profiles).toList
@@ -87,8 +90,8 @@ class ApplicationWithFilter extends Controller with Security[CommonProfile] {
   }
 
   def loginForm = Action { implicit request =>
-    val formClient = config.getClients().findClient("FormClient").asInstanceOf[FormClient]
-    Ok(views.html.loginForm.render(formClient.getCallbackUrl()))
+    val formClient = config.getClients.findClient("FormClient").asInstanceOf[FormClient]
+    Ok(views.html.loginForm.render(formClient.getCallbackUrl))
   }
 
   def jwt = Action { implicit request =>

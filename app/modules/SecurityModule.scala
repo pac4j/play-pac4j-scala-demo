@@ -17,9 +17,11 @@ import org.pac4j.saml.client.SAML2ClientConfiguration
 import play.api.{Configuration, Environment}
 import java.io.File
 
+import org.pac4j.play.store.{PlayCacheStore, PlaySessionStore}
 import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer
 import org.pac4j.core.config.Config
 import org.pac4j.saml.client.SAML2Client
+import play.cache.CacheApi
 
 /**
  * Guice DI module to be included in application.conf
@@ -27,7 +29,6 @@ import org.pac4j.saml.client.SAML2Client
 class SecurityModule(environment: Environment, configuration: Configuration) extends AbstractModule {
 
   override def configure(): Unit = {
-
     val fbId = configuration.getString("fbId").get
     val fbSecret = configuration.getString("fbSecret").get
     val baseUrl = configuration.getString("baseUrl").get
@@ -41,7 +42,8 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
 
     // CAS
     val casClient = new CasClient("https://casserverpac4j.herokuapp.com/login")
-    casClient.setLogoutHandler(new PlayCacheLogoutHandler())
+
+    casClient.setLogoutHandler(new PlayCacheLogoutHandler(getProvider(classOf[CacheApi])))
     casClient.setCasProtocol(CasProtocol.CAS20)
     // casClient.setGateway(true)
     /*val casProxyReceptor = new CasProxyReceptor()
@@ -52,7 +54,7 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
     val cfg = new SAML2ClientConfiguration("resource:samlKeystore.jks", "pac4j-demo-passwd", "pac4j-demo-passwd", "resource:openidp-feide.xml")
     cfg.setMaximumAuthenticationLifetime(3600)
     cfg.setServiceProviderEntityId("urn:mace:saml:pac4j.org")
-    cfg.setServiceProviderMetadataPath(new File("target", "sp-metadata.xml").getAbsolutePath())
+    cfg.setServiceProviderMetadataPath(new File("target", "sp-metadata.xml").getAbsolutePath)
     val saml2Client = new SAML2Client(cfg)
 
     // OpenID Connect
@@ -79,8 +81,7 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
     config.setHttpActionAdapter(new DemoHttpActionAdapter())
     bind(classOf[Config]).toInstance(config)
 
-    // for test purposes: profile timeout = 60 seconds
-    // config.getSessionStore.asInstanceOf[PlayCacheStore].setProfileTimeout(60)
+    bind(classOf[PlaySessionStore]).to(classOf[PlayCacheStore])
 
     // callback
     val callbackController = new CallbackController()
