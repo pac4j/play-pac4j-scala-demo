@@ -1,7 +1,7 @@
 package modules
 
 import com.google.inject.AbstractModule
-import controllers.{CustomAuthorizer, DemoHttpActionAdapter}
+import controllers.{CustomAuthorizer, DemoHttpActionAdapter, RoleAdminAuthGenerator}
 import org.pac4j.cas.client.CasClient
 import org.pac4j.cas.client.CasClient.CasProtocol
 import org.pac4j.core.client.Clients
@@ -20,6 +20,7 @@ import java.io.File
 import org.pac4j.play.store.{PlayCacheStore, PlaySessionStore}
 import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer
 import org.pac4j.core.config.Config
+import org.pac4j.oidc.profile.OidcProfile
 import org.pac4j.saml.client.SAML2Client
 import play.cache.CacheApi
 
@@ -58,11 +59,12 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
     val saml2Client = new SAML2Client(cfg)
 
     // OpenID Connect
-    val oidcClient = new OidcClient()
+    val oidcClient = new OidcClient[OidcProfile]()
     oidcClient.setClientID("343992089165-i1es0qvej18asl33mvlbeq750i3ko32k.apps.googleusercontent.com")
     oidcClient.setSecret("unXK_RSCbCXLTic2JACTiAo9")
     oidcClient.setDiscoveryURI("https://accounts.google.com/.well-known/openid-configuration")
     oidcClient.addCustomParam("prompt", "consent")
+    oidcClient.addAuthorizationGenerator(new RoleAdminAuthGenerator)
 
     // REST authent with JWT for a token passed in the url as the token parameter
     val parameterClient = new ParameterClient("token", new JwtAuthenticator("12345678901234567890123456789012"))
