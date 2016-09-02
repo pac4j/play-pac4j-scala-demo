@@ -11,13 +11,14 @@ import org.pac4j.play.scala._
 import play.api.libs.json.Json
 import org.pac4j.core.credentials.Credentials
 import javax.inject.Inject
+import play.libs.concurrent.HttpExecutionContext
 
 import org.pac4j.core.config.Config
 import org.pac4j.play.store.PlaySessionStore
 
 import scala.collection.JavaConversions._
 
-class Application @Inject() (val config: Config, val playSessionStore: PlaySessionStore) extends Controller with Security[CommonProfile] {
+class Application @Inject() (val config: Config, val playSessionStore: PlaySessionStore, override val ec: HttpExecutionContext) extends Controller with Security[CommonProfile] {
 
   private def getProfiles(implicit request: RequestHeader): List[CommonProfile] = {
     val webContext = new PlayWebContext(request, playSessionStore)
