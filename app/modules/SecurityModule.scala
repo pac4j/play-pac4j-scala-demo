@@ -3,7 +3,6 @@ package modules
 import com.google.inject.AbstractModule
 import controllers.{CustomAuthorizer, DemoHttpActionAdapter, RoleAdminAuthGenerator}
 import org.pac4j.cas.client.CasClient
-import org.pac4j.cas.client.CasClient.CasProtocol
 import org.pac4j.core.client.Clients
 import org.pac4j.http.client.direct.{DirectBasicAuthClient, ParameterClient}
 import org.pac4j.http.client.indirect.{FormClient, IndirectBasicAuthClient}
@@ -17,9 +16,13 @@ import org.pac4j.saml.client.SAML2ClientConfiguration
 import play.api.{Configuration, Environment}
 import java.io.File
 
+import org.pac4j.cas.config.{CasConfiguration, CasProtocol}
 import org.pac4j.play.store.{PlayCacheStore, PlaySessionStore}
 import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer
 import org.pac4j.core.config.Config
+import org.pac4j.jwt.config.encryption.SecretEncryptionConfiguration
+import org.pac4j.jwt.config.signature.SecretSignatureConfiguration
+import org.pac4j.oidc.config.OidcConfiguration
 import org.pac4j.oidc.profile.OidcProfile
 import org.pac4j.saml.client.SAML2Client
 import play.cache.CacheApi
@@ -42,10 +45,11 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
     val indirectBasicAuthClient = new IndirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator())
 
     // CAS
-    val casClient = new CasClient("https://casserverpac4j.herokuapp.com/login")
+    val casConfiguration = new CasConfiguration("https://casserverpac4j.herokuapp.com/login")
+    casConfiguration.setLogoutHandler(new PlayCacheLogoutHandler(getProvider(classOf[CacheApi])))
+    casConfiguration.setProtocol(CasProtocol.CAS20)
+    val casClient = new CasClient(casConfiguration)
 
-    casClient.setLogoutHandler(new PlayCacheLogoutHandler(getProvider(classOf[CacheApi])))
-    casClient.setCasProtocol(CasProtocol.CAS20)
     // casClient.setGateway(true)
     /*val casProxyReceptor = new CasProxyReceptor()
     casProxyReceptor.setCallbackUrl("http://localhost:9000/casProxyCallback")
@@ -59,15 +63,19 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
     val saml2Client = new SAML2Client(cfg)
 
     // OpenID Connect
-    val oidcClient = new OidcClient[OidcProfile]()
-    oidcClient.setClientID("343992089165-i1es0qvej18asl33mvlbeq750i3ko32k.apps.googleusercontent.com")
-    oidcClient.setSecret("unXK_RSCbCXLTic2JACTiAo9")
-    oidcClient.setDiscoveryURI("https://accounts.google.com/.well-known/openid-configuration")
-    oidcClient.addCustomParam("prompt", "consent")
+    val oidcConfiguration = new OidcConfiguration()
+    oidcConfiguration.setClientId("343992089165-i1es0qvej18asl33mvlbeq750i3ko32k.apps.googleusercontent.com")
+    oidcConfiguration.setSecret("unXK_RSCbCXLTic2JACTiAo9")
+    oidcConfiguration.setDiscoveryURI("https://accounts.google.com/.well-known/openid-configuration")
+    oidcConfiguration.addCustomParam("prompt", "consent")
+    val oidcClient = new OidcClient[OidcProfile](oidcConfiguration)
     oidcClient.addAuthorizationGenerator(new RoleAdminAuthGenerator)
 
     // REST authent with JWT for a token passed in the url as the token parameter
-    val parameterClient = new ParameterClient("token", new JwtAuthenticator("12345678901234567890123456789012"))
+    val jwtAuthenticator = new JwtAuthenticator()
+    jwtAuthenticator.addSignatureConfiguration(new SecretSignatureConfiguration("12345678901234567890123456789012"))
+    jwtAuthenticator.addEncryptionConfiguration(new SecretEncryptionConfiguration("12345678901234567890123456789012"))
+    val parameterClient = new ParameterClient("token", jwtAuthenticator);
     parameterClient.setSupportGetRequest(true)
     parameterClient.setSupportPostRequest(false)
 
