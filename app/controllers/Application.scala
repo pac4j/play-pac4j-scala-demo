@@ -32,10 +32,9 @@ class Application @Inject() (val config: Config, val playSessionStore: PlaySessi
     Ok(views.html.index(profiles))
   }
 
-  def facebookIndex = Secure("FacebookClient") { profiles =>
-    Action { request =>
-      Ok(views.html.protectedIndex(profiles))
-    }
+  // secured by filter
+  def facebookIndex = Action { request =>
+    Ok(views.html.protectedIndex(getProfiles(request)))
   }
 
   def facebookAdminIndex = Secure("FacebookClient", "admin") { profiles =>
