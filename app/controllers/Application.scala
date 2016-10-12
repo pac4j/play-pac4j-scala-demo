@@ -28,10 +28,8 @@ class Application extends Controller with Security[CommonProfile] {
     Ok(views.html.index(profiles))
   }
 
-  def facebookIndex = Secure("FacebookClient") { profiles =>
-    Action { request =>
-      Ok(views.html.protectedIndex(profiles))
-    }
+  def facebookIndex = Action { request =>
+    Ok(views.html.protectedIndex(getProfiles(request)))
   }
 
   def facebookAdminIndex = Secure("FacebookClient", "admin") { profiles =>
