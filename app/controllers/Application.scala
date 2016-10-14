@@ -113,10 +113,9 @@ class Application @Inject() (val config: Config, val playSessionStore: PlaySessi
     }
   }
 
-  def restJwtIndex = Secure("ParameterClient") { profiles =>
-    Action { request =>
-      Ok(views.html.protectedIndex(profiles))
-    }
+  // secured by filter
+  def restJwtIndex = Action { request =>
+    Ok(views.html.protectedIndex(getProfiles(request)))
   }
 
   def loginForm = Action { request =>
