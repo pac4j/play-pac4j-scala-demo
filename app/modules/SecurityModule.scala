@@ -19,6 +19,7 @@ import java.io.File
 import org.pac4j.cas.config.{CasConfiguration, CasProtocol}
 import org.pac4j.play.store.{PlayCacheStore, PlaySessionStore}
 import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer
+import org.pac4j.core.client.direct.AnonymousClient
 import org.pac4j.core.config.Config
 import org.pac4j.jwt.config.encryption.SecretEncryptionConfiguration
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration
@@ -83,7 +84,8 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
     val directBasicAuthClient = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator)
 
     val clients = new Clients(baseUrl + "/callback", facebookClient, twitterClient, formClient,
-      indirectBasicAuthClient, casClient, saml2Client, oidcClient, parameterClient, directBasicAuthClient) // , casProxyReceptor);
+      indirectBasicAuthClient, casClient, saml2Client, oidcClient, parameterClient, directBasicAuthClient,
+      new AnonymousClient()) // , casProxyReceptor);
 
     val config = new Config(clients)
     config.addAuthorizer("admin", new RequireAnyRoleAuthorizer[Nothing]("ROLE_ADMIN"))
