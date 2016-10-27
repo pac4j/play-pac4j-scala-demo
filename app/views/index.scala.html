@@ -1,4 +1,4 @@
-@(profiles: List[org.pac4j.core.profile.CommonProfile])
+@(profiles: List[org.pac4j.core.profile.CommonProfile], csrfToken: String)
 <h1>index</h1>
 <a href="facebook/index.html">Protected url by Facebook : facebook/index.html</a> (use a real account)<br />
 <a href="facebookadmin/index.html">Protected url by Facebook with ROLE_ADMIN: facebookadmin/index.html</a> (use a real account)<br />
@@ -17,6 +17,10 @@
 <a href="/dba/index.html">Protected url by DirectBasicAuthClient: /dba/index.html</a> (POST the <em>Authorization</em> header with value: <em>Basic amxlbGV1OmpsZWxldQ==</em>) then by <a href="/dba/index.html">ParameterClient: /dba/index.html</a> (with request parameter: token=<em>jwt_generated_token</em>)<br />
 <a href="/rest-jwt/index.html">Protected url by ParameterClient: /rest-jwt/index.html</a> (with request parameter: token=<em>jwt_generated_token</em>)<br />
 <br />
+<form method="POST" action="/csrf/index.html">
+    Token: <input type="text" name="pac4jCsrfToken" value="@csrfToken" /><br />
+    <input type="submit" value="Protected by CSRF token: /csrf/index.html" />
+</form>
 <a href="forceLogin?client_name=FacebookClient">Force Facebook login</a> (even if already authenticated)<br />
 <br />
 <a href="/logout?url=/?forcepostlogouturl">logout</a>

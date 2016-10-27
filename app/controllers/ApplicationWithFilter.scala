@@ -8,9 +8,10 @@ import org.pac4j.play.PlayWebContext
 import org.pac4j.play.scala.Security
 import play.api.libs.json.Json
 import javax.inject.Inject
-import play.libs.concurrent.HttpExecutionContext
 
+import play.libs.concurrent.HttpExecutionContext
 import org.pac4j.core.config.Config
+import org.pac4j.core.context.Pac4jConstants
 import org.pac4j.play.store.PlaySessionStore
 import play.api.mvc._
 
@@ -25,9 +26,12 @@ class ApplicationWithFilter @Inject() (val config: Config, val playSessionStore:
     asScalaBuffer(profiles).toList
   }
 
-  def index = Action { implicit request =>
-    val profile = getProfiles(request)
-    Ok(views.html.index(profile))
+  def index = Secure("AnonymousClient", "csrfToken") { profiles =>
+    Action { request =>
+      val webContext = new PlayWebContext(request, playSessionStore)
+      val csrfToken = webContext.getSessionAttribute(Pac4jConstants.CSRF_TOKEN).asInstanceOf[String]
+      Ok(views.html.index(profiles, csrfToken))
+    }
   }
 
   def facebookIndex = Action { implicit request =>

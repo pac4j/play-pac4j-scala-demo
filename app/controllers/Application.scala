@@ -11,9 +11,10 @@ import org.pac4j.play.scala._
 import play.api.libs.json.Json
 import org.pac4j.core.credentials.Credentials
 import javax.inject.Inject
-import play.libs.concurrent.HttpExecutionContext
 
+import play.libs.concurrent.HttpExecutionContext
 import org.pac4j.core.config.Config
+import org.pac4j.core.context.Pac4jConstants
 import org.pac4j.play.store.PlaySessionStore
 
 import scala.collection.JavaConversions._
@@ -27,9 +28,18 @@ class Application @Inject() (val config: Config, val playSessionStore: PlaySessi
     asScalaBuffer(profiles).toList
   }
 
-  def index = Action { request =>
-    val profiles = getProfiles(request)
-    Ok(views.html.index(profiles))
+  def index = Secure("AnonymousClient", "csrfToken") { profiles =>
+    Action { request =>
+      val webContext = new PlayWebContext(request, playSessionStore)
+      val csrfToken = webContext.getSessionAttribute(Pac4jConstants.CSRF_TOKEN).asInstanceOf[String]
+      Ok(views.html.index(profiles, csrfToken))
+    }
+  }
+
+  def csrfIndex = Secure("AnonymousClient", "csrfCheck") { profiles =>
+    Action { request =>
+      Ok(views.html.csrf(profiles))
+    }
   }
 
   // secured by filter

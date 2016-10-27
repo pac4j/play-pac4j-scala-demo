@@ -23,6 +23,7 @@ GET         /protected/custom.html            controllers.Application.protectedC
 GET         /dba/index.html                   controllers.Application.dbaIndex()
 POST        /dba/index.html                   controllers.Application.dbaIndex()
 GET         /rest-jwt/index.html              controllers.Application.restJwtIndex()
+POST        /csrf/index.html                  controllers.Application.csrfIndex()
 
 # URLs protected via Filter
 GET         /filter/facebook/index.html              controllers.ApplicationWithFilter.facebookIndex()
