@@ -11,7 +11,7 @@ libraryDependencies ++= Seq(
   ws,
   filters,
   specs2 % Test,
-  "org.pac4j" % "play-pac4j" % "2.6.0-SNAPSHOT",
+  "org.pac4j" % "play-pac4j" % "2.6.0",
   "org.pac4j" % "pac4j-http" % "1.9.4",
   "org.pac4j" % "pac4j-cas" % "1.9.4",
   "org.pac4j" % "pac4j-openid" % "1.9.4" exclude("xml-apis" , "xml-apis"),
