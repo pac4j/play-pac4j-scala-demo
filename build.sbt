@@ -25,7 +25,7 @@ libraryDependencies ++= Seq(
   "org.pac4j" % "pac4j-mongo" % "1.9.5-SNAPSHOT",
   "org.pac4j" % "pac4j-stormpath" % "1.9.5-SNAPSHOT",
   "com.typesafe.play" % "play-cache_2.11" % "2.5.4",
-  "commons-io" % "commons-io" % "2.4"
+  "commons-io" % "commons-io" % "2.5"
 )
 
 resolvers ++= Seq(Resolver.mavenLocal, "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases", "Sonatype snapshots repository" at "https://oss.sonatype.org/content/repositories/snapshots/")
