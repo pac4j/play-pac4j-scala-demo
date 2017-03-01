@@ -12,6 +12,7 @@ import javax.inject.Inject
 import play.libs.concurrent.HttpExecutionContext
 import org.pac4j.core.config.Config
 import org.pac4j.core.context.Pac4jConstants
+import org.pac4j.jwt.config.signature.SecretSignatureConfiguration
 import org.pac4j.play.store.PlaySessionStore
 import play.api.mvc._
 
@@ -30,7 +31,7 @@ class ApplicationWithFilter @Inject() (val config: Config, val playSessionStore:
     Action { request =>
       val webContext = new PlayWebContext(request, playSessionStore)
       val csrfToken = webContext.getSessionAttribute(Pac4jConstants.CSRF_TOKEN).asInstanceOf[String]
-      Ok(views.html.index(profiles, csrfToken))
+      Ok(views.html.index(profiles, csrfToken, null))
     }
   }
 
@@ -101,7 +102,7 @@ class ApplicationWithFilter @Inject() (val config: Config, val playSessionStore:
 
   def jwt = Action { implicit request =>
     val profiles = getProfiles(request)
-    val generator = new JwtGenerator[CommonProfile]("12345678901234567890123456789012")
+    val generator = new JwtGenerator[CommonProfile](new SecretSignatureConfiguration("12345678901234567890123456789012"))
     var token: String = ""
     if (CommonHelper.isNotEmpty(profiles)) {
       token = generator.generate(profiles.get(0))

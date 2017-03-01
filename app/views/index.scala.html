@@ -1,4 +1,4 @@
-@(profiles: List[org.pac4j.core.profile.CommonProfile], csrfToken: String)
+@(profiles: List[org.pac4j.core.profile.CommonProfile], csrfToken: String, sessionId: String)
 <h1>index</h1>
 <a href="facebook/index.html">Protected url by Facebook : facebook/index.html</a> (use a real account)<br />
 <a href="facebookadmin/index.html">Protected url by Facebook with ROLE_ADMIN: facebookadmin/index.html</a> (use a real account)<br />
@@ -23,9 +23,13 @@
 </form>
 <a href="forceLogin?client_name=FacebookClient">Force Facebook login</a> (even if already authenticated)<br />
 <br />
-<a href="/logout?url=/?forcepostlogouturl">logout</a>
+<a href="/logout?url=/?forcepostlogouturl">local logout</a><br />
+<br/>
+<a href="/centralLogout?url=http://localhost:9000/?forcepostlogouturlafteridp">central logout</a>
 <br /><br />
-profile : @profiles
+profiles: @profiles<br />
+<br />
+sessionId: @sessionId
 <br /><br />
 <br />
 <br />
