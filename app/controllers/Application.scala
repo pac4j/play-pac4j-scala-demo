@@ -12,9 +12,11 @@ import play.api.libs.json.Json
 import org.pac4j.core.credentials.Credentials
 import javax.inject.Inject
 
+import org.pac4j.cas.profile.CasProxyProfile
 import play.libs.concurrent.HttpExecutionContext
 import org.pac4j.core.config.Config
 import org.pac4j.core.context.Pac4jConstants
+import org.pac4j.jwt.config.signature.SecretSignatureConfiguration
 import org.pac4j.play.store.PlaySessionStore
 
 import scala.collection.JavaConversions._
@@ -31,8 +33,9 @@ class Application @Inject() (val config: Config, val playSessionStore: PlaySessi
   def index = Secure("AnonymousClient", "csrfToken") { profiles =>
     Action { request =>
       val webContext = new PlayWebContext(request, playSessionStore)
+      val sessionId = webContext.getSessionIdentifier()
       val csrfToken = webContext.getSessionAttribute(Pac4jConstants.CSRF_TOKEN).asInstanceOf[String]
-      Ok(views.html.index(profiles, csrfToken))
+      Ok(views.html.index(profiles, csrfToken, sessionId))
     }
   }
 
@@ -106,8 +109,17 @@ class Application @Inject() (val config: Config, val playSessionStore: PlaySessi
   }
 
   def casIndex = Secure("CasClient") { profiles =>
-    Action { request =>
-      Ok(views.html.protectedIndex(profiles))
+    Action { request => {
+      val profile = profiles.get(0)
+      val service = "http://localhost:8080/proxiedService"
+      var proxyTicket: String = null
+      if (profile.isInstanceOf[CasProxyProfile]) {
+        val proxyProfile = profile.asInstanceOf[CasProxyProfile]
+        proxyTicket = proxyProfile.getProxyTicketFor(service)
+      }
+      Ok(views.html.casProtectedIndex.render(profile, service, proxyTicket))
+      //Ok(views.html.protectedIndex(profiles))
+    }
     }
   }
   
@@ -135,7 +147,7 @@ class Application @Inject() (val config: Config, val playSessionStore: PlaySessi
 
   def jwt = Action { request =>
     val profiles = getProfiles(request)
-    val generator = new JwtGenerator[CommonProfile]("12345678901234567890123456789012")
+    val generator = new JwtGenerator[CommonProfile](new SecretSignatureConfiguration("12345678901234567890123456789012"))
     var token: String = ""
     if (CommonHelper.isNotEmpty(profiles)) {
       token = generator.generate(profiles.get(0))

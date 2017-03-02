@@ -2,7 +2,7 @@ package modules
 
 import com.google.inject.AbstractModule
 import controllers.{CustomAuthorizer, DemoHttpActionAdapter, RoleAdminAuthGenerator}
-import org.pac4j.cas.client.CasClient
+import org.pac4j.cas.client.{CasClient, CasProxyReceptor}
 import org.pac4j.core.client.Clients
 import org.pac4j.http.client.direct.{DirectBasicAuthClient, ParameterClient}
 import org.pac4j.http.client.indirect.{FormClient, IndirectBasicAuthClient}
@@ -10,23 +10,20 @@ import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordA
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator
 import org.pac4j.oauth.client.{FacebookClient, TwitterClient}
 import org.pac4j.oidc.client.OidcClient
-import org.pac4j.play.cas.logout.PlayCacheLogoutHandler
-import org.pac4j.play.{ApplicationLogoutController, CallbackController}
+import org.pac4j.play.{CallbackController, LogoutController}
 import org.pac4j.saml.client.SAML2ClientConfiguration
 import play.api.{Configuration, Environment}
 import java.io.File
 
 import org.pac4j.cas.config.{CasConfiguration, CasProtocol}
-import org.pac4j.play.store.{PlayCacheStore, PlaySessionStore}
+import org.pac4j.play.store.{PlayCacheSessionStore, PlaySessionStore}
 import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer
 import org.pac4j.core.client.direct.AnonymousClient
 import org.pac4j.core.config.Config
-import org.pac4j.jwt.config.encryption.SecretEncryptionConfiguration
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration
 import org.pac4j.oidc.config.OidcConfiguration
 import org.pac4j.oidc.profile.OidcProfile
 import org.pac4j.saml.client.SAML2Client
-import play.cache.CacheApi
 
 /**
  * Guice DI module to be included in application.conf
@@ -46,15 +43,11 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
     val indirectBasicAuthClient = new IndirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator())
 
     // CAS
-    val casConfiguration = new CasConfiguration("https://casserverpac4j.herokuapp.com/login")
-    casConfiguration.setLogoutHandler(new PlayCacheLogoutHandler(getProvider(classOf[CacheApi])))
+    val casConfiguration = new CasConfiguration("http://localhost:8888/cas/login") // ("https://casserverpac4j.herokuapp.com/login")
+    val casProxyReceptor = new CasProxyReceptor()
     casConfiguration.setProtocol(CasProtocol.CAS20)
+    casConfiguration.setProxyReceptor(casProxyReceptor)
     val casClient = new CasClient(casConfiguration)
-
-    // casClient.setGateway(true)
-    /*val casProxyReceptor = new CasProxyReceptor()
-    casProxyReceptor.setCallbackUrl("http://localhost:9000/casProxyCallback")
-    casClient.setCasProxyReceptor(casProxyReceptor)*/
 
     // SAML
     val cfg = new SAML2ClientConfiguration("resource:samlKeystore.jks", "pac4j-demo-passwd", "pac4j-demo-passwd", "resource:openidp-feide.xml")
@@ -75,8 +68,7 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
     // REST authent with JWT for a token passed in the url as the token parameter
     val jwtAuthenticator = new JwtAuthenticator()
     jwtAuthenticator.addSignatureConfiguration(new SecretSignatureConfiguration("12345678901234567890123456789012"))
-    jwtAuthenticator.addEncryptionConfiguration(new SecretEncryptionConfiguration("12345678901234567890123456789012"))
-    val parameterClient = new ParameterClient("token", jwtAuthenticator);
+    val parameterClient = new ParameterClient("token", jwtAuthenticator)
     parameterClient.setSupportGetRequest(true)
     parameterClient.setSupportPostRequest(false)
 
@@ -85,7 +77,7 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
 
     val clients = new Clients(baseUrl + "/callback", facebookClient, twitterClient, formClient,
       indirectBasicAuthClient, casClient, saml2Client, oidcClient, parameterClient, directBasicAuthClient,
-      new AnonymousClient()) // , casProxyReceptor);
+      new AnonymousClient(), casProxyReceptor)
 
     val config = new Config(clients)
     config.addAuthorizer("admin", new RequireAnyRoleAuthorizer[Nothing]("ROLE_ADMIN"))
@@ -93,7 +85,7 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
     config.setHttpActionAdapter(new DemoHttpActionAdapter())
     bind(classOf[Config]).toInstance(config)
 
-    bind(classOf[PlaySessionStore]).to(classOf[PlayCacheStore])
+    bind(classOf[PlaySessionStore]).to(classOf[PlayCacheSessionStore])
 
     // callback
     val callbackController = new CallbackController()
@@ -102,8 +94,8 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
     bind(classOf[CallbackController]).toInstance(callbackController)
 
     // logout
-    val logoutController = new ApplicationLogoutController()
+    val logoutController = new LogoutController()
     logoutController.setDefaultUrl("/")
-    bind(classOf[ApplicationLogoutController]).toInstance(logoutController)
+    bind(classOf[LogoutController]).toInstance(logoutController)
   }
 }
