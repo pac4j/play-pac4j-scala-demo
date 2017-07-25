@@ -31,9 +31,9 @@ import org.pac4j.saml.client.SAML2Client
 class SecurityModule(environment: Environment, configuration: Configuration) extends AbstractModule {
 
   override def configure(): Unit = {
-    val fbId = configuration.getString("fbId").get
-    val fbSecret = configuration.getString("fbSecret").get
-    val baseUrl = configuration.getString("baseUrl").get
+    val fbId = configuration.get[String]("fbId")
+    val fbSecret = configuration.get[String]("fbSecret")
+    val baseUrl = configuration.get[String]("baseUrl")
 
     // OAuth
     val facebookClient = new FacebookClient(fbId, fbSecret)
