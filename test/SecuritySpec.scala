@@ -2,7 +2,7 @@ import java.nio.charset.StandardCharsets
 import java.util.Base64
 
 import fakes.FakeCache
-import play.api.cache.CacheApi
+import play.api.cache.SyncCacheApi
 import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Cookie
@@ -20,43 +20,44 @@ trait SecuritySpec extends PlaySpecification {
 
   val configuration = Configuration.load(Environment.simple())
 
-  implicit val app : Application =
+  override lazy val baseApplicationBuilder = {
     new GuiceApplicationBuilder()
     .loadConfig(configuration)
-    .overrides(bind[CacheApi].to[FakeCache])
-    .in(Environment.simple()).build()
-
-  Play.start(app)
-
-  "The facebook page" should {
-    "be secured with the facebook client" in {
-      checkRedirect(s"$baseUrl/facebook/index.html", "facebook.com")
-    }
+    .overrides(bind[SyncCacheApi].to[FakeCache])
+    .in(Environment.simple())
   }
 
-  "The facebook admin page" should {
-    "be secured with the facebook client" in {
-      checkRedirect(s"$baseUrl/facebookadmin/index.html", "facebook.com")  
-    }
-  }
+  running()(implicit app => {
 
-  "The facebook custom page" should {
-    "be secured with the facebook client" in {
-      checkRedirect(s"$baseUrl/facebookcustom/index.html", "facebook.com")
+    "The facebook page" should {
+      "be secured with the facebook client" in {
+        checkRedirect(s"$baseUrl/facebook/index.html", "facebook.com")
+      }
     }
-  }
 
-  "The twitter page" should {
-    "be secured with the twitter client" in {
-      checkRedirect(s"$baseUrl/twitter/index.html", "twitter.com")
+    "The facebook admin page" should {
+      "be secured with the facebook client" in {
+        checkRedirect(s"$baseUrl/facebookadmin/index.html", "facebook.com")  
+      }
     }
-  }
 
-  "The form protected page" should {
-    "be secured and redirects to the loginForm" in {
-      checkRedirect(s"$baseUrl/form/index.html", "loginForm")
+    "The facebook custom page" should {
+      "be secured with the facebook client" in {
+        checkRedirect(s"$baseUrl/facebookcustom/index.html", "facebook.com")
+      }
     }
-  }
+
+    "The twitter page" should {
+      "be secured with the twitter client" in {
+        checkRedirect(s"$baseUrl/twitter/index.html", "twitter.com")
+      }
+    }
+
+    "The form protected page" should {
+      "be secured and redirects to the loginForm" in {
+        checkRedirect(s"$baseUrl/form/index.html", "loginForm")
+      }
+    }
 
 //  "The form json protected page" should {
 //    "be secured and sends a 401" in new WithApplication(application) {
@@ -64,35 +65,36 @@ trait SecuritySpec extends PlaySpecification {
 //    }
 //  }
 
-  "The basic auth protected page" should {
-    "be secured and redirect to callback url for basic auth" in {
-      checkRedirect(s"$baseUrl/basicauth/index.html", "callback")
+    "The basic auth protected page" should {
+      "be secured and redirect to callback url for basic auth" in {
+        checkRedirect(s"$baseUrl/basicauth/index.html", "callback")
+      }
     }
-  }
 
-  "The protected page" should {
-    "be secured" in {
-      checkUnAuthorized(s"$baseUrl/protected/index.html")
+    "The protected page" should {
+      "be secured" in {
+        checkUnAuthorized(s"$baseUrl/protected/index.html")
+      }
+      "return ok when authorized" in {
+        val resp = route(app, FakeRequest(GET, s"$baseUrl/protected/index.html").withCookies(authenticate("john"))).get
+        status(resp) mustEqual OK
+      }
     }
-    "return ok when authorized" in {
-      val resp = route(app, FakeRequest(GET, s"$baseUrl/protected/index.html").withCookies(authenticate("john"))).get
-      status(resp) mustEqual OK
-    }
-  }
 
-  "The protected custom page" should {
-    "be secured" in {
-      checkUnAuthorized(s"$baseUrl/protected/custom.html")
+    "The protected custom page" should {
+      "be secured" in {
+        checkUnAuthorized(s"$baseUrl/protected/custom.html")
+      }
+      "return forbidden when not custom authorized" in {
+        val resp = route(app, FakeRequest(GET, s"$baseUrl/protected/custom.html").withCookies(authenticate("John"))).get
+        status(resp) mustEqual FORBIDDEN
+      }
+      "return ok when custom authorized" in {
+        val resp = route(app, FakeRequest(GET, s"$baseUrl/protected/custom.html").withCookies(authenticate("jlejohn"))).get
+        status(resp) mustEqual OK
+      }
     }
-    "return forbidden when not custom authorized" in {
-      val resp = route(app, FakeRequest(GET, s"$baseUrl/protected/custom.html").withCookies(authenticate("John"))).get
-      status(resp) mustEqual FORBIDDEN
-    }
-    "return ok when custom authorized" in {
-      val resp = route(app, FakeRequest(GET, s"$baseUrl/protected/custom.html").withCookies(authenticate("jlejohn"))).get
-      status(resp) mustEqual OK
-    }
-  }
+  })
 
 
   def checkUnAuthorized(url: String)(implicit app: Application) = {

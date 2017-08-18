@@ -1,5 +1,5 @@
 import fakes.FakeCache
-import play.api.cache.CacheApi
+import play.api.cache.SyncCacheApi
 import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.{Environment, Configuration}
@@ -14,7 +14,7 @@ class HomePageSpec extends PlaySpecification {
   def application = {
     new GuiceApplicationBuilder()
     .loadConfig(configuration)
-    .overrides(bind[CacheApi].to[FakeCache])
+    .overrides(bind[SyncCacheApi].to[FakeCache])
     .in(Environment.simple()).build()
   }
 
