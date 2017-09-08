@@ -21,7 +21,7 @@ import org.pac4j.play.store.PlaySessionStore
 
 import scala.collection.JavaConverters._
 
-class Application @Inject() (val config: Config, val playSessionStore: PlaySessionStore, override val ec: HttpExecutionContext, val actionBuilder: DefaultActionBuilder) extends Security[CommonProfile] {
+class Application @Inject() (val controllerComponents: ControllerComponents, val config: Config, val playSessionStore: PlaySessionStore, override val ec: HttpExecutionContext, val actionBuilder: DefaultActionBuilder) extends Security[CommonProfile] {
 
   private def getProfiles(implicit request: RequestHeader): List[CommonProfile] = {
     val webContext = new PlayWebContext(request, playSessionStore)

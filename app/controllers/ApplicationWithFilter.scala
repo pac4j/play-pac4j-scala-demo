@@ -1,6 +1,6 @@
 package controllers
 
-import org.pac4j.core.profile.{CommonProfile, ProfileManager, UserProfile}
+import org.pac4j.core.profile.{CommonProfile, ProfileManager}
 import org.pac4j.core.util.CommonHelper
 import org.pac4j.http.client.indirect.FormClient
 import org.pac4j.jwt.profile.JwtGenerator
@@ -18,7 +18,7 @@ import play.api.mvc._
 
 import scala.collection.JavaConverters._
 
-class ApplicationWithFilter @Inject() (val config: Config, val playSessionStore: PlaySessionStore, override val ec: HttpExecutionContext, val actionBuilder: DefaultActionBuilder) extends Security[CommonProfile] {
+class ApplicationWithFilter @Inject() (val controllerComponents: ControllerComponents, val config: Config, val playSessionStore: PlaySessionStore, override val ec: HttpExecutionContext, val actionBuilder: DefaultActionBuilder) extends Security[CommonProfile] {
 
   private def getProfiles(implicit request: RequestHeader): List[CommonProfile] = {
     val webContext = new PlayWebContext(request, playSessionStore)
