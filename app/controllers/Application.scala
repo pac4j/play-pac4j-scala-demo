@@ -13,7 +13,6 @@ import org.pac4j.core.credentials.Credentials
 import javax.inject.Inject
 
 import org.pac4j.cas.profile.CasProxyProfile
-import play.libs.concurrent.HttpExecutionContext
 import org.pac4j.core.config.Config
 import org.pac4j.core.context.Pac4jConstants
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration
@@ -21,7 +20,7 @@ import org.pac4j.play.store.PlaySessionStore
 
 import scala.collection.JavaConverters._
 
-class Application @Inject() (val controllerComponents: ControllerComponents, val config: Config, val playSessionStore: PlaySessionStore, override val ec: HttpExecutionContext, val actionBuilder: DefaultActionBuilder) extends Security[CommonProfile] {
+class Application @Inject() (val controllerComponents: ControllerComponents, val config: Config, val playSessionStore: PlaySessionStore, val actionBuilder: DefaultActionBuilder) extends Security[CommonProfile] {
 
   private def getProfiles(implicit request: RequestHeader): List[CommonProfile] = {
     val webContext = new PlayWebContext(request, playSessionStore)

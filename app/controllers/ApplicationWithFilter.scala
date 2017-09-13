@@ -9,7 +9,6 @@ import org.pac4j.play.scala.Security
 import play.api.libs.json.Json
 import javax.inject.Inject
 
-import play.libs.concurrent.HttpExecutionContext
 import org.pac4j.core.config.Config
 import org.pac4j.core.context.Pac4jConstants
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration
@@ -18,7 +17,7 @@ import play.api.mvc._
 
 import scala.collection.JavaConverters._
 
-class ApplicationWithFilter @Inject() (val controllerComponents: ControllerComponents, val config: Config, val playSessionStore: PlaySessionStore, override val ec: HttpExecutionContext, val actionBuilder: DefaultActionBuilder) extends Security[CommonProfile] {
+class ApplicationWithFilter @Inject() (val controllerComponents: ControllerComponents, val config: Config, val playSessionStore: PlaySessionStore, val actionBuilder: DefaultActionBuilder) extends Security[CommonProfile] {
 
   private def getProfiles(implicit request: RequestHeader): List[CommonProfile] = {
     val webContext = new PlayWebContext(request, playSessionStore)
