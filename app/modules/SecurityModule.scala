@@ -20,6 +20,7 @@ import org.pac4j.play.store.{PlayCacheSessionStore, PlaySessionStore}
 import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer
 import org.pac4j.core.client.direct.AnonymousClient
 import org.pac4j.core.config.Config
+import org.pac4j.core.matching.PathMatcher
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration
 import org.pac4j.oidc.config.OidcConfiguration
 import org.pac4j.oidc.profile.OidcProfile
@@ -82,6 +83,7 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
     val config = new Config(clients)
     config.addAuthorizer("admin", new RequireAnyRoleAuthorizer[Nothing]("ROLE_ADMIN"))
     config.addAuthorizer("custom", new CustomAuthorizer)
+    config.addMatcher("excludedPath", new PathMatcher().excludeRegex("^/filter/facebook/notprotected\\.html$"))
     config.setHttpActionAdapter(new DemoHttpActionAdapter())
     bind(classOf[Config]).toInstance(config)
 
