@@ -39,6 +39,10 @@ class ApplicationWithFilter @Inject() (val config: Config, val playSessionStore:
     Ok(views.html.protectedIndex(getProfiles(request)))
   }
 
+  def facebookNotProtectedIndex = Action { request =>
+    Ok(views.html.notprotectedIndex(getProfiles(request)))
+  }
+
   def facebookAdminIndex = Action { implicit request =>
     Ok(views.html.protectedIndex(getProfiles(request)))
   }

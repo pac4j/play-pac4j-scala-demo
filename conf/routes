@@ -27,6 +27,7 @@ POST        /csrf/index.html                  controllers.Application.csrfIndex(
 
 # URLs protected via Filter
 GET         /filter/facebook/index.html              controllers.ApplicationWithFilter.facebookIndex()
+GET         /filter/facebook/notprotected.html       controllers.ApplicationWithFilter.facebookNotProtectedIndex()
 GET         /filter/facebookadmin/index.html         controllers.ApplicationWithFilter.facebookAdminIndex()
 GET         /filter/facebookcustom/index.html        controllers.ApplicationWithFilter.facebookCustomIndex()
 GET         /filter/twitter/index.html               controllers.ApplicationWithFilter.twitterIndex()
