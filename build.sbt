@@ -7,7 +7,7 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 scalaVersion := "2.11.8"
 
 val playPac4jVersion = "3.1.0-SNAPSHOT"
-val pac4jVersion = "2.1.0"
+val pac4jVersion = "2.2.0-SNAPSHOT"
 val playVersion = "2.5.4"
 
 libraryDependencies ++= Seq(
@@ -27,7 +27,8 @@ libraryDependencies ++= Seq(
   "org.pac4j" % "pac4j-ldap" % pac4jVersion,
   "org.pac4j" % "pac4j-sql" % pac4jVersion,
   "org.pac4j" % "pac4j-mongo" % pac4jVersion,
-  "org.pac4j" % "pac4j-stormpath" % "2.0.0",
+  "org.pac4j" % "pac4j-couch" % pac4jVersion,
+  "org.pac4j" % "pac4j-kerberos" % pac4jVersion,
   "com.typesafe.play" % "play-cache_2.11" % playVersion,
   "commons-io" % "commons-io" % "2.5"
 )
