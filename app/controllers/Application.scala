@@ -45,6 +45,10 @@ class Application @Inject() (val config: Config, val playSessionStore: PlaySessi
     }
   }
 
+  def facebookNotProtectedIndex = Action { request =>
+    Ok(views.html.notprotectedIndex(getProfiles(request)))
+  }
+
   // secured by filter
   def facebookIndex = Action { request =>
     Ok(views.html.protectedIndex(getProfiles(request)))
