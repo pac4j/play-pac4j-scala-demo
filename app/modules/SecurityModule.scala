@@ -24,6 +24,7 @@ import org.pac4j.core.matching.PathMatcher
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration
 import org.pac4j.oidc.config.OidcConfiguration
 import org.pac4j.oidc.profile.OidcProfile
+import org.pac4j.play.scala.{DefaultSecurityComponents, SecurityComponents}
 import org.pac4j.saml.client.SAML2Client
 
 /**
@@ -31,11 +32,13 @@ import org.pac4j.saml.client.SAML2Client
   */
 class SecurityModule(environment: Environment, configuration: Configuration) extends AbstractModule {
 
-  val baseUrl = configuration.getString("baseUrl").get
+  val baseUrl = configuration.get[String]("baseUrl")
 
   override def configure(): Unit = {
 
     bind(classOf[PlaySessionStore]).to(classOf[PlayCacheSessionStore])
+
+    bind(classOf[SecurityComponents]).to(classOf[DefaultSecurityComponents])
 
     // callback
     val callbackController = new CallbackController()
