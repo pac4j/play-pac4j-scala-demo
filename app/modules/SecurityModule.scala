@@ -73,7 +73,8 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
 
   @Provides
   def provideCasClient(casProxyReceptor: CasProxyReceptor) = {
-    val casConfiguration = new CasConfiguration("http://localhost:8888/cas/login") // ("https://casserverpac4j.herokuapp.com/login")
+    val casConfiguration = new CasConfiguration("https://casserverpac4j.herokuapp.com/login")
+    //val casConfiguration = new CasConfiguration("http://localhost:8888/cas/login")
     casConfiguration.setProtocol(CasProtocol.CAS20)
     casConfiguration.setProxyReceptor(casProxyReceptor)
     new CasClient(casConfiguration)
@@ -124,7 +125,7 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
     val config = new Config(clients)
     config.addAuthorizer("admin", new RequireAnyRoleAuthorizer[Nothing]("ROLE_ADMIN"))
     config.addAuthorizer("custom", new CustomAuthorizer)
-    config.addMatcher("excludedPath", new PathMatcher().excludeRegex("^/filter/facebook/notprotected\\.html$"))
+    config.addMatcher("excludedPath", new PathMatcher().excludeRegex("^/facebook/notprotected\\.html$"))
     config.setHttpActionAdapter(new DemoHttpActionAdapter())
     config
   }

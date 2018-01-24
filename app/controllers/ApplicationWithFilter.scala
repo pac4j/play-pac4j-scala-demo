@@ -34,10 +34,6 @@ class ApplicationWithFilter @Inject() (val controllerComponents: SecurityCompone
     Ok(views.html.protectedIndex(getProfiles(request)))
   }
 
-  def facebookNotProtectedIndex = Action { request =>
-    Ok(views.html.notprotectedIndex(getProfiles(request)))
-  }
-
   def facebookAdminIndex = Action { implicit request =>
     Ok(views.html.protectedIndex(getProfiles(request)))
   }

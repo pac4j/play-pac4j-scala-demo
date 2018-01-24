@@ -51,6 +51,10 @@ class Application @Inject() (val controllerComponents: SecurityComponents) exten
     Ok(views.html.protectedIndex(profiles))
   }
 
+  def facebookNotProtectedIndex = Action { request =>
+    Ok(views.html.notprotectedIndex(getProfiles(request)))
+  }
+
   def twitterIndex = Secure("TwitterClient,FacebookClient") { implicit request =>
     Ok(views.html.protectedIndex(profiles))
   }
