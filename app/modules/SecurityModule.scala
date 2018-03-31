@@ -68,15 +68,15 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
   @Provides
   def provideIndirectBasicAuthClient: IndirectBasicAuthClient = new IndirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator())
 
-  @Provides
-  def provideCasProxyReceptor: CasProxyReceptor = new CasProxyReceptor()
+  /*@Provides
+  def provideCasProxyReceptor: CasProxyReceptor = new CasProxyReceptor()*/
 
   @Provides
   def provideCasClient(casProxyReceptor: CasProxyReceptor) = {
     val casConfiguration = new CasConfiguration("https://casserverpac4j.herokuapp.com/login")
     //val casConfiguration = new CasConfiguration("http://localhost:8888/cas/login")
     casConfiguration.setProtocol(CasProtocol.CAS20)
-    casConfiguration.setProxyReceptor(casProxyReceptor)
+    //casConfiguration.setProxyReceptor(casProxyReceptor)
     new CasClient(casConfiguration)
   }
 
@@ -90,13 +90,13 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
   }
 
   @Provides
-  def provideOidcClient: OidcClient[OidcProfile] = {
+  def provideOidcClient: OidcClient[OidcProfile, OidcConfiguration] = {
     val oidcConfiguration = new OidcConfiguration()
     oidcConfiguration.setClientId("343992089165-i1es0qvej18asl33mvlbeq750i3ko32k.apps.googleusercontent.com")
     oidcConfiguration.setSecret("unXK_RSCbCXLTic2JACTiAo9")
     oidcConfiguration.setDiscoveryURI("https://accounts.google.com/.well-known/openid-configuration")
     oidcConfiguration.addCustomParam("prompt", "consent")
-    val oidcClient = new OidcClient[OidcProfile](oidcConfiguration)
+    val oidcClient = new OidcClient[OidcProfile, OidcConfiguration](oidcConfiguration)
     oidcClient.addAuthorizationGenerator(new RoleAdminAuthGenerator)
     oidcClient
   }
@@ -116,11 +116,10 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
 
   @Provides
   def provideConfig(facebookClient: FacebookClient, twitterClient: TwitterClient, formClient: FormClient, indirectBasicAuthClient: IndirectBasicAuthClient,
-                    casClient: CasClient, saml2Client: SAML2Client, oidcClient: OidcClient[OidcProfile], parameterClient: ParameterClient, directBasicAuthClient: DirectBasicAuthClient,
-                    casProxyReceptor: CasProxyReceptor): Config = {
+                    casClient: CasClient, saml2Client: SAML2Client, oidcClient: OidcClient[OidcProfile, OidcConfiguration], parameterClient: ParameterClient, directBasicAuthClient: DirectBasicAuthClient): Config = {
     val clients = new Clients(baseUrl + "/callback", facebookClient, twitterClient, formClient,
       indirectBasicAuthClient, casClient, saml2Client, oidcClient, parameterClient, directBasicAuthClient,
-      new AnonymousClient(), casProxyReceptor)
+      new AnonymousClient())
 
     val config = new Config(clients)
     config.addAuthorizer("admin", new RequireAnyRoleAuthorizer[Nothing]("ROLE_ADMIN"))

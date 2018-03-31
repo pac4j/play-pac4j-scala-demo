@@ -1,6 +1,6 @@
 package controllers
 
-import org.pac4j.core.client.{Clients, IndirectClient}
+import org.pac4j.core.client.IndirectClient
 import org.pac4j.http.client.indirect.FormClient
 import org.pac4j.jwt.profile.JwtGenerator
 import play.api.mvc._
@@ -11,9 +11,9 @@ import org.pac4j.play.scala._
 import play.api.libs.json.Json
 import org.pac4j.core.credentials.Credentials
 import javax.inject.Inject
-
 import org.pac4j.cas.profile.CasProxyProfile
 import org.pac4j.core.context.Pac4jConstants
+import org.pac4j.core.context.session.SessionStore
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration
 
 import scala.collection.JavaConverters._
@@ -29,8 +29,9 @@ class Application @Inject() (val controllerComponents: SecurityComponents) exten
 
   def index = Secure("AnonymousClient", "csrfToken") { implicit request =>
     val webContext = new PlayWebContext(request, playSessionStore)
-    val sessionId = webContext.getSessionIdentifier()
-    val csrfToken = webContext.getSessionAttribute(Pac4jConstants.CSRF_TOKEN).asInstanceOf[String]
+    val sessionStore = webContext.getSessionStore().asInstanceOf[SessionStore[PlayWebContext]]
+    val sessionId = sessionStore.getOrCreateSessionId(webContext)
+    val csrfToken = sessionStore.get(webContext, Pac4jConstants.CSRF_TOKEN).asInstanceOf[String]
     Ok(views.html.index(profiles, csrfToken, sessionId))
   }
 
@@ -129,7 +130,7 @@ class Application @Inject() (val controllerComponents: SecurityComponents) exten
 
   def forceLogin = Action { request =>
     val context: PlayWebContext = new PlayWebContext(request, playSessionStore)
-    val client = config.getClients.findClient(context.getRequestParameter(Clients.DEFAULT_CLIENT_NAME_PARAMETER)).asInstanceOf[IndirectClient[Credentials,CommonProfile]]
+    val client = config.getClients.findClient(context.getRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER)).asInstanceOf[IndirectClient[Credentials,CommonProfile]]
     Redirect(client.getRedirectAction(context).getLocation)
   }
 }

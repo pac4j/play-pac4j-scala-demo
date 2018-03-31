@@ -8,8 +8,8 @@ import org.pac4j.play.PlayWebContext
 import org.pac4j.play.scala.{Security, SecurityComponents}
 import play.api.libs.json.Json
 import javax.inject.Inject
-
 import org.pac4j.core.context.Pac4jConstants
+import org.pac4j.core.context.session.SessionStore
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration
 import play.api.mvc._
 
@@ -26,7 +26,7 @@ class ApplicationWithFilter @Inject() (val controllerComponents: SecurityCompone
 
   def index = Secure("AnonymousClient", "csrfToken") { request =>
     val webContext = new PlayWebContext(request, playSessionStore)
-    val csrfToken = webContext.getSessionAttribute(Pac4jConstants.CSRF_TOKEN).asInstanceOf[String]
+    val csrfToken = webContext.getSessionStore().asInstanceOf[SessionStore[PlayWebContext]].get(webContext, Pac4jConstants.CSRF_TOKEN).asInstanceOf[String]
     Ok(views.html.index(request.profiles, csrfToken, null))
   }
 
