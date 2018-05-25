@@ -21,10 +21,11 @@ import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer
 import org.pac4j.core.client.direct.AnonymousClient
 import org.pac4j.core.config.Config
 import org.pac4j.core.matching.PathMatcher
+import org.pac4j.core.profile.CommonProfile
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration
 import org.pac4j.oidc.config.OidcConfiguration
 import org.pac4j.oidc.profile.OidcProfile
-import org.pac4j.play.scala.{DefaultSecurityComponents, SecurityComponents}
+import org.pac4j.play.scala.{DefaultSecurityComponents, Pac4jScalaTemplateHelper, SecurityComponents}
 import org.pac4j.saml.client.SAML2Client
 
 /**
@@ -39,6 +40,8 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
     bind(classOf[PlaySessionStore]).to(classOf[PlayCacheSessionStore])
 
     bind(classOf[SecurityComponents]).to(classOf[DefaultSecurityComponents])
+
+    bind(classOf[Pac4jScalaTemplateHelper[CommonProfile]])
 
     // callback
     val callbackController = new CallbackController()

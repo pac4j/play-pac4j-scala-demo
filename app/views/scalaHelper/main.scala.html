@@ -1,0 +1,11 @@
+@import org.pac4j.core.profile.CommonProfile
+@import org.pac4j.play.scala.Pac4jScalaTemplateHelper
+@(title: String)(content: Html)(implicit pac4jScalaTemplateHelper: Pac4jScalaTemplateHelper[CommonProfile], requestHeader: RequestHeader)
+
+<h1>@title</h1>
+
+@if(pac4jScalaTemplateHelper.getCurrentProfile.isDefined) {
+  <h2>Hello user: @pac4jScalaTemplateHelper.getCurrentProfile.get.getUsername</h2>
+}
+
+@content
