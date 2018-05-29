@@ -3,28 +3,28 @@
 # ~~~~
 
 # Public urls
-GET         /                                 controllers.Application.index()
-GET         /loginForm                        controllers.Application.loginForm()
-GET         /jwt.html                         controllers.Application.jwt()
+GET         /                                        controllers.Application.index()
+GET         /loginForm                               controllers.Application.loginForm()
+GET         /jwt.html                                controllers.Application.jwt()
 
 # URLs protected via Controller
-GET         /facebook/index.html              controllers.Application.facebookIndex()
-GET         /facebookadmin/index.html         controllers.Application.facebookAdminIndex()
-GET         /facebookcustom/index.html        controllers.Application.facebookCustomIndex()
-GET         /facebook/notprotected.html       controllers.Application.facebookNotProtectedIndex()
-GET         /twitter/index.html               controllers.Application.twitterIndex()
-GET         /form/index.html                  controllers.Application.formIndex()
-GET         /form/index.html.json             controllers.Application.formIndexJson()
-GET         /basicauth/index.html             controllers.Application.basicauthIndex()
-GET         /cas/index.html                   controllers.Application.casIndex()
-GET         /saml/index.html                  controllers.Application.samlIndex()
-GET         /oidc/index.html                  controllers.Application.oidcIndex()
-GET         /protected/index.html             controllers.Application.protectedIndex()
-GET         /protected/custom.html            controllers.Application.protectedCustomIndex()
-GET         /dba/index.html                   controllers.Application.dbaIndex()
-POST        /dba/index.html                   controllers.Application.dbaIndex()
-GET         /rest-jwt/index.html              controllers.Application.restJwtIndex()
-POST        /csrf/index.html                  controllers.Application.csrfIndex()
+GET         /facebook/index.html                     controllers.Application.facebookIndex()
+GET         /facebookadmin/index.html                controllers.Application.facebookAdminIndex()
+GET         /facebookcustom/index.html               controllers.Application.facebookCustomIndex()
+GET         /facebook/notprotected.html              controllers.Application.facebookNotProtectedIndex()
+GET         /twitter/index.html                      controllers.Application.twitterIndex()
+GET         /form/index.html                         controllers.Application.formIndex()
+GET         /form/index.html.json                    controllers.Application.formIndexJson()
+GET         /basicauth/index.html                    controllers.Application.basicauthIndex()
+GET         /cas/index.html                          controllers.Application.casIndex()
+GET         /saml/index.html                         controllers.Application.samlIndex()
+GET         /oidc/index.html                         controllers.Application.oidcIndex()
+GET         /protected/index.html                    controllers.Application.protectedIndex()
+GET         /protected/custom.html                   controllers.Application.protectedCustomIndex()
+GET         /dba/index.html                          controllers.Application.dbaIndex()
+POST        /dba/index.html                          controllers.Application.dbaIndex()
+GET         /rest-jwt/index.html                     controllers.Application.restJwtIndex()
+POST        /csrf/index.html                         controllers.Application.csrfIndex()
 
 # URLs protected via Filter
 GET         /filter/facebook/index.html              controllers.ApplicationWithFilter.facebookIndex()
@@ -43,15 +43,21 @@ GET         /filter/dba/index.html                   controllers.ApplicationWith
 POST        /filter/dba/index.html                   controllers.ApplicationWithFilter.dbaIndex()
 GET         /filter/rest-jwt/index.html              controllers.ApplicationWithFilter.restJwtIndex()
 
+# URLs for the scala template helper example
+GET         /tplHelper/index.html                    controllers.ApplicationWithScalaHelper.index()
+GET         /tplHelper/login.html                    controllers.ApplicationWithScalaHelper.loginForm()
+GET         /tplHelper/main.html                     controllers.ApplicationWithScalaHelper.userView()
+
+
 
 # Routes necessary for play-pac4j
-GET         /forceLogin                       controllers.Application.forceLogin()
-GET         /callback                         @org.pac4j.play.CallbackController.callback()
-POST        /callback                         @org.pac4j.play.CallbackController.callback()
-GET         /casProxyCallback                 @org.pac4j.play.CallbackController.callback()
-POST        /casProxyCallback                 @org.pac4j.play.CallbackController.callback()
-GET         /logout                           @org.pac4j.play.LogoutController.logout()
-GET         /centralLogout                    controllers.CentralLogoutController.logout()
+GET         /forceLogin                              controllers.Application.forceLogin()
+GET         /callback                                @org.pac4j.play.CallbackController.callback()
+POST        /callback                                @org.pac4j.play.CallbackController.callback()
+GET         /casProxyCallback                        @org.pac4j.play.CallbackController.callback()
+POST        /casProxyCallback                        @org.pac4j.play.CallbackController.callback()
+GET         /logout                                  @org.pac4j.play.LogoutController.logout()
+GET         /centralLogout                           controllers.CentralLogoutController.logout()
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file                     controllers.Assets.at(path="/public", file)
+GET         /assets/*file                            controllers.Assets.at(path="/public", file)

@@ -1,0 +1,10 @@
+@import org.pac4j.play.scala.Pac4jScalaTemplateHelper
+@import org.pac4j.core.profile.CommonProfile
+@(url: String)(implicit pac4jScalaTemplateHelper: Pac4jScalaTemplateHelper[CommonProfile], requestHeader: RequestHeader)
+
+@views.html.scalaHelper.main("Login") {
+
+  <h3>The Login Form:</h3>
+  @views.html.loginForm(url)
+
+}
