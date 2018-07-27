@@ -26,29 +26,10 @@ POST        /dba/index.html                          controllers.Application.dba
 GET         /rest-jwt/index.html                     controllers.Application.restJwtIndex()
 POST        /csrf/index.html                         controllers.Application.csrfIndex()
 
-# URLs protected via Filter
-GET         /filter/facebook/index.html              controllers.ApplicationWithFilter.facebookIndex()
-GET         /filter/facebookadmin/index.html         controllers.ApplicationWithFilter.facebookAdminIndex()
-GET         /filter/facebookcustom/index.html        controllers.ApplicationWithFilter.facebookCustomIndex()
-GET         /filter/twitter/index.html               controllers.ApplicationWithFilter.twitterIndex()
-GET         /filter/form/index.html                  controllers.ApplicationWithFilter.formIndex()
-GET         /filter/form/index.html.json             controllers.ApplicationWithFilter.formIndexJson()
-GET         /filter/basicauth/index.html             controllers.ApplicationWithFilter.basicauthIndex()
-GET         /filter/cas/index.html                   controllers.ApplicationWithFilter.casIndex()
-GET         /filter/saml/index.html                  controllers.ApplicationWithFilter.samlIndex()
-GET         /filter/oidc/index.html                  controllers.ApplicationWithFilter.oidcIndex()
-GET         /filter/protected/index.html             controllers.ApplicationWithFilter.protectedIndex()
-GET         /filter/protected/custom.html            controllers.ApplicationWithFilter.protectedCustomIndex()
-GET         /filter/dba/index.html                   controllers.ApplicationWithFilter.dbaIndex()
-POST        /filter/dba/index.html                   controllers.ApplicationWithFilter.dbaIndex()
-GET         /filter/rest-jwt/index.html              controllers.ApplicationWithFilter.restJwtIndex()
-
 # URLs for the scala template helper example
 GET         /tplHelper/index.html                    controllers.ApplicationWithScalaHelper.index()
 GET         /tplHelper/login.html                    controllers.ApplicationWithScalaHelper.loginForm()
 GET         /tplHelper/main.html                     controllers.ApplicationWithScalaHelper.userView()
-
-
 
 # Routes necessary for play-pac4j
 GET         /forceLogin                              controllers.Application.forceLogin()
