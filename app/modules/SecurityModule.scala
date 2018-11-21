@@ -16,7 +16,7 @@ import play.api.{Configuration, Environment}
 import java.io.File
 
 import org.pac4j.cas.config.{CasConfiguration, CasProtocol}
-import org.pac4j.play.store.{PlayCacheSessionStore, PlaySessionStore}
+import org.pac4j.play.store.{PlayCacheSessionStore, PlayCookieSessionStore, PlaySessionStore, ShiroAesDataEncrypter}
 import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer
 import org.pac4j.core.client.direct.AnonymousClient
 import org.pac4j.core.config.Config
@@ -37,7 +37,10 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
 
   override def configure(): Unit = {
 
-    bind(classOf[PlaySessionStore]).to(classOf[PlayCacheSessionStore])
+    val sKey = configuration.get[String]("play.http.secret.key").substring(0, 16)
+    val dataEncrypter = new ShiroAesDataEncrypter(sKey)
+    val playSessionStore = new PlayCookieSessionStore(dataEncrypter)
+    bind(classOf[PlaySessionStore]).toInstance(playSessionStore)
 
     bind(classOf[SecurityComponents]).to(classOf[DefaultSecurityComponents])
 
