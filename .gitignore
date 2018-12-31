@@ -16,5 +16,4 @@ dist
 .target
 .sbtserver
 *.lock
-*.sbt
 /bin/
