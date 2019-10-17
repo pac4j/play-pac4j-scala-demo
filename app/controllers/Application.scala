@@ -18,7 +18,7 @@ import org.pac4j.jwt.config.signature.SecretSignatureConfiguration
 
 import scala.collection.JavaConverters._
 
-class Application @Inject() (val controllerComponents: SecurityComponents) extends Security[CommonProfile] {
+class Application @Inject() (val controllerComponents: SecurityComponents, implicit val pac4jTemplateHelper: Pac4jScalaTemplateHelper[CommonProfile]) extends Security[CommonProfile] {
 
   private def getProfiles(implicit request: RequestHeader): List[CommonProfile] = {
     val webContext = new PlayWebContext(request, playSessionStore)
@@ -28,6 +28,7 @@ class Application @Inject() (val controllerComponents: SecurityComponents) exten
   }
 
   def index = Secure("AnonymousClient", "csrfToken") { implicit request =>
+    //println(pac4jTemplateHelper.getCurrentProfile.get)
     val webContext = new PlayWebContext(request, playSessionStore)
     val sessionStore = webContext.getSessionStore().asInstanceOf[SessionStore[PlayWebContext]]
     val sessionId = sessionStore.getOrCreateSessionId(webContext)
@@ -75,7 +76,7 @@ class Application @Inject() (val controllerComponents: SecurityComponents) exten
   // Setting the isAjax parameter is no longer necessary as AJAX requests are automatically detected:
   // a 401 error response will be returned instead of a redirection to the login url.
   def formIndexJson = Secure("FormClient") { implicit request =>
-    val content = views.html.protectedIndex.render(profiles)
+    val content = views.html.protectedIndex.render(profiles, pac4jTemplateHelper, request)
     val json = Json.obj("content" -> content.toString())
     Ok(json).as("application/json")
   }
@@ -109,7 +110,7 @@ class Application @Inject() (val controllerComponents: SecurityComponents) exten
   }
 
   // secured by filter
-  def restJwtIndex = Action { request =>
+  def restJwtIndex = Action { implicit request =>
     Ok(views.html.protectedIndex(getProfiles(request)))
   }
 
