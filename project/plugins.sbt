@@ -9,7 +9,7 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-coffeescript" % "1.0.0")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-less" % "1.1.2")
 
-addSbtPlugin("com.typesafe.sbt" % "sbt-jshint" % "1.0.3")
+addSbtPlugin("com.typesafe.sbt" % "sbt-jshint" % "1.0.6")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-rjs" % "2014-05-24-9590e9b")
 
