@@ -8,7 +8,7 @@ scalaVersion := "2.12.2"
 
 val playPac4jVersion = "9.0.0-RC3-SNAPSHOT"
 val pac4jVersion = "4.0.0-RC3-SNAPSHOT"
-val playVersion = "2.7.2"
+val playVersion = "2.7.4"
 
 libraryDependencies ++= Seq(
   guice,
@@ -32,7 +32,7 @@ libraryDependencies ++= Seq(
   "org.pac4j" % "pac4j-couch" % pac4jVersion,
   "org.apache.shiro" % "shiro-core" % "1.4.0",
   "com.typesafe.play" % "play-cache_2.12" % playVersion,
-  "commons-io" % "commons-io" % "2.5"
+  "commons-io" % "commons-io" % "2.6"
 )
 
 resolvers ++= Seq(
