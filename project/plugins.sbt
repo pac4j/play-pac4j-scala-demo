@@ -13,7 +13,7 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-jshint" % "1.0.6")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-rjs" % "2014-05-24-9590e9b")
 
-addSbtPlugin("com.typesafe.sbt" % "sbt-digest" % "1.1.0")
+addSbtPlugin("com.typesafe.sbt" % "sbt-digest" % "1.1.4")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-mocha" % "1.1.2")
 
