@@ -11,22 +11,22 @@ import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator
 import org.pac4j.oauth.client.{FacebookClient, TwitterClient}
 import org.pac4j.oidc.client.OidcClient
 import org.pac4j.play.{CallbackController, LogoutController}
-import org.pac4j.saml.client.SAML2ClientConfiguration
 import play.api.{Configuration, Environment}
 import java.io.File
+import java.nio.charset.StandardCharsets
 
 import org.pac4j.cas.config.{CasConfiguration, CasProtocol}
-import org.pac4j.play.store.{PlayCacheSessionStore, PlayCookieSessionStore, PlaySessionStore, ShiroAesDataEncrypter}
+import org.pac4j.play.store.{PlayCookieSessionStore, PlaySessionStore, ShiroAesDataEncrypter}
 import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer
 import org.pac4j.core.client.direct.AnonymousClient
 import org.pac4j.core.config.Config
-import org.pac4j.core.matching.PathMatcher
+import org.pac4j.core.matching.matcher.PathMatcher
 import org.pac4j.core.profile.CommonProfile
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration
 import org.pac4j.oidc.config.OidcConfiguration
-import org.pac4j.oidc.profile.OidcProfile
 import org.pac4j.play.scala.{DefaultSecurityComponents, Pac4jScalaTemplateHelper, SecurityComponents}
 import org.pac4j.saml.client.SAML2Client
+import org.pac4j.saml.config.SAML2Configuration
 
 /**
   * Guice DI module to be included in application.conf
@@ -38,7 +38,7 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
   override def configure(): Unit = {
 
     val sKey = configuration.get[String]("play.http.secret.key").substring(0, 16)
-    val dataEncrypter = new ShiroAesDataEncrypter(sKey)
+    val dataEncrypter = new ShiroAesDataEncrypter(sKey.getBytes(StandardCharsets.UTF_8))
     val playSessionStore = new PlayCookieSessionStore(dataEncrypter)
     bind(classOf[PlaySessionStore]).toInstance(playSessionStore)
 
@@ -88,7 +88,7 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
 
   @Provides
   def provideSaml2Client: SAML2Client = {
-    val cfg = new SAML2ClientConfiguration("resource:samlKeystore.jks", "pac4j-demo-passwd", "pac4j-demo-passwd", "resource:openidp-feide.xml")
+    val cfg = new SAML2Configuration("resource:samlKeystore.jks", "pac4j-demo-passwd", "pac4j-demo-passwd", "resource:openidp-feide.xml")
     cfg.setMaximumAuthenticationLifetime(3600)
     cfg.setServiceProviderEntityId("urn:mace:saml:pac4j.org")
     cfg.setServiceProviderMetadataPath(new File("target", "sp-metadata.xml").getAbsolutePath)
@@ -96,13 +96,13 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
   }
 
   @Provides
-  def provideOidcClient: OidcClient[OidcProfile, OidcConfiguration] = {
+  def provideOidcClient: OidcClient[OidcConfiguration] = {
     val oidcConfiguration = new OidcConfiguration()
     oidcConfiguration.setClientId("343992089165-i1es0qvej18asl33mvlbeq750i3ko32k.apps.googleusercontent.com")
     oidcConfiguration.setSecret("unXK_RSCbCXLTic2JACTiAo9")
     oidcConfiguration.setDiscoveryURI("https://accounts.google.com/.well-known/openid-configuration")
     oidcConfiguration.addCustomParam("prompt", "consent")
-    val oidcClient = new OidcClient[OidcProfile, OidcConfiguration](oidcConfiguration)
+    val oidcClient = new OidcClient[OidcConfiguration](oidcConfiguration)
     oidcClient.addAuthorizationGenerator(new RoleAdminAuthGenerator)
     oidcClient
   }
@@ -122,7 +122,7 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
 
   @Provides
   def provideConfig(facebookClient: FacebookClient, twitterClient: TwitterClient, formClient: FormClient, indirectBasicAuthClient: IndirectBasicAuthClient,
-                    casClient: CasClient, saml2Client: SAML2Client, oidcClient: OidcClient[OidcProfile, OidcConfiguration], parameterClient: ParameterClient, directBasicAuthClient: DirectBasicAuthClient): Config = {
+                    casClient: CasClient, saml2Client: SAML2Client, oidcClient: OidcClient[OidcConfiguration], parameterClient: ParameterClient, directBasicAuthClient: DirectBasicAuthClient): Config = {
     val clients = new Clients(baseUrl + "/callback", facebookClient, twitterClient, formClient,
       indirectBasicAuthClient, casClient, saml2Client, oidcClient, parameterClient, directBasicAuthClient,
       new AnonymousClient())

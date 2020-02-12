@@ -14,6 +14,7 @@ import javax.inject.Inject
 import org.pac4j.cas.profile.CasProxyProfile
 import org.pac4j.core.context.Pac4jConstants
 import org.pac4j.core.context.session.SessionStore
+import org.pac4j.core.exception.http.WithLocationAction
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration
 
 import scala.collection.JavaConverters._
@@ -27,16 +28,16 @@ class Application @Inject() (val controllerComponents: SecurityComponents, impli
     asScalaBuffer(profiles).toList
   }
 
-  def index = Secure("AnonymousClient", "csrfToken") { implicit request =>
+  def index = Secure("AnonymousClient") { implicit request =>
     //println(pac4jTemplateHelper.getCurrentProfile.get)
     val webContext = new PlayWebContext(request, playSessionStore)
     val sessionStore = webContext.getSessionStore().asInstanceOf[SessionStore[PlayWebContext]]
     val sessionId = sessionStore.getOrCreateSessionId(webContext)
-    val csrfToken = sessionStore.get(webContext, Pac4jConstants.CSRF_TOKEN).asInstanceOf[String]
+    val csrfToken = webContext.getRequestAttribute(Pac4jConstants.CSRF_TOKEN).orElse(null).asInstanceOf[String]
     Ok(views.html.index(profiles, csrfToken, sessionId))
   }
 
-  def csrfIndex = Secure("AnonymousClient", "csrfCheck") { implicit request =>
+  def csrfIndex = Secure("AnonymousClient") { implicit request =>
     Ok(views.html.csrf(profiles.asJava))
   }
 
@@ -115,7 +116,7 @@ class Application @Inject() (val controllerComponents: SecurityComponents, impli
   }
 
   def loginForm = Action { request =>
-    val formClient = config.getClients.findClient("FormClient").asInstanceOf[FormClient]
+    val formClient = config.getClients.findClient("FormClient").get.asInstanceOf[FormClient]
     Ok(views.html.loginForm.render(formClient.getCallbackUrl))
   }
 
@@ -131,8 +132,8 @@ class Application @Inject() (val controllerComponents: SecurityComponents, impli
 
   def forceLogin = Action { request =>
     val context: PlayWebContext = new PlayWebContext(request, playSessionStore)
-    val client = config.getClients.findClient(context.getRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER)).asInstanceOf[IndirectClient[Credentials,CommonProfile]]
-    val location = client.getRedirectAction(context).getLocation
+    val client = config.getClients.findClient(context.getRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER).get).get.asInstanceOf[IndirectClient[Credentials]]
+    val location = client.getRedirectionAction(context).get.asInstanceOf[WithLocationAction].getLocation
     val newSession = new Session(mapAsScalaMap(context.getJavaSession).toMap)
     Redirect(location).withSession(newSession)
   }

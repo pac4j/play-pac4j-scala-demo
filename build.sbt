@@ -1,13 +1,13 @@
 name := "play-pac4j-scala-demo"
 
-version := "9.0.0-SNAPSHOT"
+version := "9.0.0-RC3-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion := "2.12.2"
 
-val playPac4jVersion = "9.0.0-SNAPSHOT"
-val pac4jVersion = "3.8.3"
+val playPac4jVersion = "9.0.0-RC3-SNAPSHOT"
+val pac4jVersion = "4.0.0-RC3-SNAPSHOT"
 val playVersion = "2.7.2"
 
 libraryDependencies ++= Seq(
@@ -37,7 +37,7 @@ libraryDependencies ++= Seq(
 
 resolvers ++= Seq(
   Resolver.mavenLocal,
-  "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases",
+  "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases",
   "Sonatype snapshots repository" at "https://oss.sonatype.org/content/repositories/snapshots/",
   "Shibboleth releases" at "https://build.shibboleth.net/nexus/content/repositories/releases/",
   "MuleSoft" at "https://repository.mulesoft.org/nexus/content/repositories/public/"
