@@ -32,7 +32,7 @@ libraryDependencies ++= Seq(
   "org.pac4j" % "pac4j-couch" % pac4jVersion,
   "org.apache.shiro" % "shiro-core" % "1.4.0",
   "com.typesafe.play" % "play-cache_2.12" % playVersion,
-  "commons-io" % "commons-io" % "2.5"
+  "commons-io" % "commons-io" % "20030203.000550"
 )
 
 resolvers ++= Seq(
