@@ -36,12 +36,12 @@ libraryDependencies ++= Seq(
 )
 
 resolvers ++= Seq(
-  Resolver.mavenLocal,
+  Resolver.mavenLocal)/*,
   "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases",
   "Sonatype snapshots repository" at "https://oss.sonatype.org/content/repositories/snapshots/",
   "Shibboleth releases" at "https://build.shibboleth.net/nexus/content/repositories/releases/",
   "MuleSoft" at "https://repository.mulesoft.org/nexus/content/repositories/public/"
-)
+)*/
 
 routesGenerator := InjectedRoutesGenerator
 

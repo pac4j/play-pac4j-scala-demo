@@ -134,7 +134,7 @@ class Application @Inject() (val controllerComponents: SecurityComponents, impli
     val context: PlayWebContext = new PlayWebContext(request, playSessionStore)
     val client = config.getClients.findClient(context.getRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER).get).get.asInstanceOf[IndirectClient[Credentials]]
     val location = client.getRedirectionAction(context).get.asInstanceOf[WithLocationAction].getLocation
-    val newSession = new Session(mapAsScalaMap(context.getJavaSession).toMap)
+    val newSession = new Session(mapAsScalaMap(context.getSession).toMap)
     Redirect(location).withSession(newSession)
   }
 }
