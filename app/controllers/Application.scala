@@ -12,7 +12,7 @@ import play.api.libs.json.Json
 import org.pac4j.core.credentials.Credentials
 import javax.inject.Inject
 import org.pac4j.cas.profile.CasProxyProfile
-import org.pac4j.core.context.Pac4jConstants
+import org.pac4j.core.util.Pac4jConstants
 import org.pac4j.core.context.session.SessionStore
 import org.pac4j.core.exception.http.WithLocationAction
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration
