@@ -11,9 +11,9 @@ class DemoHttpActionAdapter extends PlayHttpActionAdapter {
 
   override def adapt(action: HttpAction, context: PlayWebContext): Result = {
     if (action != null && action.getCode == HttpConstants.UNAUTHORIZED) {
-      context.supplementResult(Results.unauthorized(views.html.error401.render().toString()).as(HttpConstants.HTML_CONTENT_TYPE))
+      context.supplementResponse(Results.unauthorized(views.html.error401.render().toString()).as(HttpConstants.HTML_CONTENT_TYPE))
     } else if (action != null && action.getCode == HttpConstants.FORBIDDEN) {
-      context.supplementResult(Results.forbidden(views.html.error403.render().toString()).as(HttpConstants.HTML_CONTENT_TYPE))
+      context.supplementResponse(Results.forbidden(views.html.error403.render().toString()).as(HttpConstants.HTML_CONTENT_TYPE))
     } else {
       super.adapt(action, context)
     }
