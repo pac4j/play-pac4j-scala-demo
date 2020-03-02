@@ -1,6 +1,6 @@
 package modules
 
-import com.google.inject.{AbstractModule, Provides}
+import com.google.inject.{AbstractModule, Provides, Singleton}
 import controllers.{CustomAuthorizer, DemoHttpActionAdapter, RoleAdminAuthGenerator}
 import org.pac4j.cas.client.{CasClient, CasProxyReceptor}
 import org.pac4j.core.client.Clients
@@ -16,7 +16,7 @@ import java.io.File
 import java.nio.charset.StandardCharsets
 
 import org.pac4j.cas.config.{CasConfiguration, CasProtocol}
-import org.pac4j.play.store.{PlayCookieSessionStore, PlaySessionStore, ShiroAesDataEncrypter}
+import org.pac4j.play.store.{PlayCacheSessionStore, PlaySessionStore}
 import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer
 import org.pac4j.core.client.direct.AnonymousClient
 import org.pac4j.core.config.Config
@@ -27,6 +27,7 @@ import org.pac4j.oidc.config.OidcConfiguration
 import org.pac4j.play.scala.{DefaultSecurityComponents, Pac4jScalaTemplateHelper, SecurityComponents}
 import org.pac4j.saml.client.SAML2Client
 import org.pac4j.saml.config.SAML2Configuration
+import play.cache.SyncCacheApi
 
 /**
   * Guice DI module to be included in application.conf
@@ -36,11 +37,6 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
   val baseUrl = configuration.get[String]("baseUrl")
 
   override def configure(): Unit = {
-
-    val sKey = configuration.get[String]("play.http.secret.key").substring(0, 16)
-    val dataEncrypter = new ShiroAesDataEncrypter(sKey.getBytes(StandardCharsets.UTF_8))
-    val playSessionStore = new PlayCookieSessionStore(dataEncrypter)
-    bind(classOf[PlaySessionStore]).toInstance(playSessionStore)
 
     bind(classOf[SecurityComponents]).to(classOf[DefaultSecurityComponents])
 
@@ -133,5 +129,12 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
     config.addMatcher("excludedPath", new PathMatcher().excludeRegex("^/facebook/notprotected\\.html$"))
     config.setHttpActionAdapter(new DemoHttpActionAdapter())
     config
+  }
+
+  @Provides
+  @Singleton
+  private def createPlaySessionStore(syncCacheApi: SyncCacheApi): PlaySessionStore = {
+    val sessionStore = new PlayCacheSessionStore(syncCacheApi)
+    sessionStore
   }
 }
