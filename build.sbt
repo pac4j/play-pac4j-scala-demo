@@ -1,13 +1,13 @@
 name := "play-pac4j-scala-demo"
 
-version := "9.0.0-RC3-SNAPSHOT"
+version := "9.0.0-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion := "2.12.2"
 
-val playPac4jVersion = "9.0.0-RC3"
-val pac4jVersion = "4.0.0-RC3"
+val playPac4jVersion = "9.0.0-SNAPSHOT"
+val pac4jVersion = "4.0.0-SNAPSHOT"
 val playVersion = "2.7.4"
 
 libraryDependencies ++= Seq(
