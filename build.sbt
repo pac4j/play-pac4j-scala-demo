@@ -21,7 +21,7 @@ libraryDependencies ++= Seq(
   "org.pac4j" % "pac4j-cas" % pac4jVersion,
   "org.pac4j" % "pac4j-openid" % pac4jVersion exclude("xml-apis", "xml-apis"),
   "org.pac4j" % "pac4j-oauth" % pac4jVersion,
-  "org.pac4j" % "pac4j-saml" % pac4jVersion,
+  "org.pac4j" % "pac4j-saml-opensamlv3" % pac4jVersion,
   "org.pac4j" % "pac4j-oidc" % pac4jVersion exclude("commons-io", "commons-io"),
   "org.pac4j" % "pac4j-gae" % pac4jVersion,
   "org.pac4j" % "pac4j-jwt" % pac4jVersion exclude("commons-io", "commons-io"),
