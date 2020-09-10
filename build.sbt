@@ -31,7 +31,7 @@ libraryDependencies ++= Seq(
   "org.pac4j" % "pac4j-kerberos" % pac4jVersion,
   "org.pac4j" % "pac4j-couch" % pac4jVersion,
   "org.apache.shiro" % "shiro-core" % "1.6.0",
-  "com.typesafe.play" % "play-cache_2.12" % playVersion,
+  "com.typesafe.play" % "play-cache_2.13" % playVersion,
   "commons-io" % "commons-io" % "2.8.0"
 )
 
