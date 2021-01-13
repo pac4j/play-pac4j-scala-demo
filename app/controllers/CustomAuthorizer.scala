@@ -1,17 +1,18 @@
 package controllers
 
-import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang3.StringUtils
 import org.pac4j.core.authorization.authorizer.ProfileAuthorizer
 import org.pac4j.core.context.WebContext
-import org.pac4j.core.profile.CommonProfile
+import org.pac4j.core.context.session.SessionStore
+import org.pac4j.core.profile.UserProfile
 
-class CustomAuthorizer extends ProfileAuthorizer[CommonProfile] {
+class CustomAuthorizer extends ProfileAuthorizer {
 
-  def isAuthorized(context: WebContext, profiles: java.util.List[CommonProfile]): Boolean = {
-    return isAnyAuthorized(context, profiles)
+  def isAuthorized(context: WebContext, sessionStore: SessionStore, profiles: java.util.List[UserProfile]): Boolean = {
+    return isAnyAuthorized(context, sessionStore, profiles)
   }
 
-  def isProfileAuthorized(context: WebContext, profile: CommonProfile): Boolean = {
+  def isProfileAuthorized(context: WebContext, sessionStore: SessionStore, profile: UserProfile): Boolean = {
     if (profile == null) {
       false
     } else {

@@ -16,10 +16,11 @@ import java.io.File
 import java.nio.charset.StandardCharsets
 
 import org.pac4j.cas.config.{CasConfiguration, CasProtocol}
-import org.pac4j.play.store.{PlayCookieSessionStore, PlaySessionStore, ShiroAesDataEncrypter}
+import org.pac4j.play.store.{PlayCookieSessionStore, ShiroAesDataEncrypter}
 import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer
 import org.pac4j.core.client.direct.AnonymousClient
 import org.pac4j.core.config.Config
+import org.pac4j.core.context.session.SessionStore
 import org.pac4j.core.matching.matcher.PathMatcher
 import org.pac4j.core.profile.CommonProfile
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration
@@ -40,7 +41,7 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
     val sKey = configuration.get[String]("play.http.secret.key").substring(0, 16)
     val dataEncrypter = new ShiroAesDataEncrypter(sKey.getBytes(StandardCharsets.UTF_8))
     val playSessionStore = new PlayCookieSessionStore(dataEncrypter)
-    bind(classOf[PlaySessionStore]).toInstance(playSessionStore)
+    bind(classOf[SessionStore]).toInstance(playSessionStore)
 
     bind(classOf[SecurityComponents]).to(classOf[DefaultSecurityComponents])
 
@@ -49,7 +50,6 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
     // callback
     val callbackController = new CallbackController()
     callbackController.setDefaultUrl("/?defaulturlafterlogout")
-    callbackController.setMultiProfile(true)
     bind(classOf[CallbackController]).toInstance(callbackController)
 
     // logout
@@ -62,7 +62,9 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
   def provideFacebookClient: FacebookClient = {
     val fbId = configuration.getOptional[String]("fbId").get
     val fbSecret = configuration.getOptional[String]("fbSecret").get
-    new FacebookClient(fbId, fbSecret)
+    val fbClient = new FacebookClient(fbId, fbSecret)
+    fbClient.setMultiProfile(true)
+    fbClient
   }
 
   @Provides
@@ -96,13 +98,13 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
   }
 
   @Provides
-  def provideOidcClient: OidcClient[OidcConfiguration] = {
+  def provideOidcClient: OidcClient = {
     val oidcConfiguration = new OidcConfiguration()
     oidcConfiguration.setClientId("343992089165-i1es0qvej18asl33mvlbeq750i3ko32k.apps.googleusercontent.com")
     oidcConfiguration.setSecret("unXK_RSCbCXLTic2JACTiAo9")
     oidcConfiguration.setDiscoveryURI("https://accounts.google.com/.well-known/openid-configuration")
     oidcConfiguration.addCustomParam("prompt", "consent")
-    val oidcClient = new OidcClient[OidcConfiguration](oidcConfiguration)
+    val oidcClient = new OidcClient(oidcConfiguration)
     oidcClient.addAuthorizationGenerator(new RoleAdminAuthGenerator)
     oidcClient
   }
@@ -122,13 +124,13 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
 
   @Provides
   def provideConfig(facebookClient: FacebookClient, twitterClient: TwitterClient, formClient: FormClient, indirectBasicAuthClient: IndirectBasicAuthClient,
-                    casClient: CasClient, saml2Client: SAML2Client, oidcClient: OidcClient[OidcConfiguration], parameterClient: ParameterClient, directBasicAuthClient: DirectBasicAuthClient): Config = {
+                    casClient: CasClient, saml2Client: SAML2Client, oidcClient: OidcClient, parameterClient: ParameterClient, directBasicAuthClient: DirectBasicAuthClient): Config = {
     val clients = new Clients(baseUrl + "/callback", facebookClient, twitterClient, formClient,
       indirectBasicAuthClient, casClient, saml2Client, oidcClient, parameterClient, directBasicAuthClient,
       new AnonymousClient())
 
     val config = new Config(clients)
-    config.addAuthorizer("admin", new RequireAnyRoleAuthorizer[Nothing]("ROLE_ADMIN"))
+    config.addAuthorizer("admin", new RequireAnyRoleAuthorizer("ROLE_ADMIN"))
     config.addAuthorizer("custom", new CustomAuthorizer)
     config.addMatcher("excludedPath", new PathMatcher().excludeRegex("^/facebook/notprotected\\.html$"))
     config.setHttpActionAdapter(new DemoHttpActionAdapter())

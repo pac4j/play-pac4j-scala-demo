@@ -11,9 +11,9 @@ class ApplicationWithScalaHelper @Inject()(implicit val pac4jTemplateHelper: Pac
 
   def index = Secure("AnonymousClient", "csrfToken") { implicit request =>
     if(pac4jTemplateHelper.getCurrentProfile.isDefined) {
-      Redirect(routes.ApplicationWithScalaHelper.userView)
+      Redirect(routes.ApplicationWithScalaHelper.userView())
     } else {
-      Redirect(routes.ApplicationWithScalaHelper.loginForm)
+      Redirect(routes.ApplicationWithScalaHelper.loginForm())
     }
   }
 

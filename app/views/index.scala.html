@@ -1,6 +1,6 @@
 @import org.pac4j.play.scala.Pac4jScalaTemplateHelper
-@import org.pac4j.core.profile.CommonProfile
-@(profiles: List[org.pac4j.core.profile.CommonProfile], csrfToken: String, sessionId: String)(implicit pac4jScalaTemplateHelper: Pac4jScalaTemplateHelper[CommonProfile], requestHeader: RequestHeader)
+@import org.pac4j.core.profile.UserProfile
+@(profiles: List[org.pac4j.core.profile.UserProfile], csrfToken: String, sessionId: String)(implicit pac4jScalaTemplateHelper: Pac4jScalaTemplateHelper[UserProfile], requestHeader: RequestHeader)
 <h1>index</h1>
 <a href="facebook/index.html">Protected url by Facebook : facebook/index.html</a> (use a real account)<br />
 <a href="facebookadmin/index.html">Protected url by Facebook with ROLE_ADMIN: facebookadmin/index.html</a> (use a real account)<br />

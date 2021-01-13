@@ -8,14 +8,8 @@
     </encoder>
   </appender>
 
-  <!--
-    The logger name is typically the Java/Scala package name.
-    This configures the log level to log at for a package and its children packages.
-  -->
-  <!--logger name="play" level="INFO" />
-  <logger name="application" level="INFO" /-->
-  <logger name="org.pac4j.play" level="DEBUG" />
   <logger name="org.pac4j.core.engine" level="DEBUG" />
+  <logger name="org.pac4j.play.store.PlayCookieSessionStore" level="DEBUG" />
 
   <root level="WARN">
     <appender-ref ref="STDOUT" />

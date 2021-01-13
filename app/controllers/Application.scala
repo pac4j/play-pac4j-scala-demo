@@ -13,31 +13,29 @@ import org.pac4j.core.credentials.Credentials
 import javax.inject.Inject
 import org.pac4j.cas.profile.CasProxyProfile
 import org.pac4j.core.util.Pac4jConstants
-import org.pac4j.core.context.session.SessionStore
 import org.pac4j.core.exception.http.WithLocationAction
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration
 
 import scala.collection.JavaConverters._
 
-class Application @Inject() (val controllerComponents: SecurityComponents, implicit val pac4jTemplateHelper: Pac4jScalaTemplateHelper[CommonProfile]) extends Security[CommonProfile] {
+class Application @Inject() (val controllerComponents: SecurityComponents, implicit val pac4jTemplateHelper: Pac4jScalaTemplateHelper[UserProfile]) extends Security[UserProfile] {
 
-  private def getProfiles(implicit request: RequestHeader): List[CommonProfile] = {
-    val webContext = new PlayWebContext(request, playSessionStore)
-    val profileManager = new ProfileManager[CommonProfile](webContext)
-    val profiles = profileManager.getAll(true)
+  private def getProfiles(implicit request: RequestHeader): List[UserProfile] = {
+    val webContext = new PlayWebContext(request)
+    val profileManager = new ProfileManager(webContext, controllerComponents.sessionStore)
+    val profiles = profileManager.getProfiles()
     asScalaBuffer(profiles).toList
   }
 
   def index = Secure("AnonymousClient") { implicit request =>
     //println(pac4jTemplateHelper.getCurrentProfile.get)
-    val webContext = new PlayWebContext(request, playSessionStore)
-    val sessionStore = webContext.getSessionStore().asInstanceOf[SessionStore[PlayWebContext]]
-    val sessionId = sessionStore.getOrCreateSessionId(webContext)
+    val webContext = new PlayWebContext(request)
+    val sessionId = controllerComponents.sessionStore.getSessionId(webContext, false).orElse("nosession")
     val csrfToken = webContext.getRequestAttribute(Pac4jConstants.CSRF_TOKEN).orElse(null).asInstanceOf[String]
-    Ok(views.html.index(profiles, csrfToken, sessionId))
+    webContext.supplementResponse(Ok(views.html.index(profiles, csrfToken, sessionId)))
   }
 
-  def csrfIndex = Secure("AnonymousClient") { implicit request =>
+  def csrfIndex = Secure("AnonymousClient", "csrfCheck") { implicit request =>
     Ok(views.html.csrf(profiles.asJava))
   }
 
@@ -122,7 +120,7 @@ class Application @Inject() (val controllerComponents: SecurityComponents, impli
 
   def jwt = Action { request =>
     val profiles = getProfiles(request)
-    val generator = new JwtGenerator[CommonProfile](new SecretSignatureConfiguration("12345678901234567890123456789012"))
+    val generator = new JwtGenerator(new SecretSignatureConfiguration("12345678901234567890123456789012"))
     var token: String = ""
     if (CommonHelper.isNotEmpty(profiles.asJava)) {
       token = generator.generate(profiles.asJava.get(0))
@@ -131,10 +129,9 @@ class Application @Inject() (val controllerComponents: SecurityComponents, impli
   }
 
   def forceLogin = Action { request =>
-    val context: PlayWebContext = new PlayWebContext(request, playSessionStore)
-    val client = config.getClients.findClient(context.getRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER).get).get.asInstanceOf[IndirectClient[Credentials]]
-    val location = client.getRedirectionAction(context).get.asInstanceOf[WithLocationAction].getLocation
-    val newSession = new Session(mapAsScalaMap(context.getNativeSession).toMap)
-    Redirect(location).withSession(newSession)
+    val context: PlayWebContext = new PlayWebContext(request)
+    val client = config.getClients.findClient(context.getRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER).get).get.asInstanceOf[IndirectClient]
+    val location = client.getRedirectionAction(context, controllerComponents.sessionStore).get.asInstanceOf[WithLocationAction].getLocation
+    context.supplementResponse(Redirect(location))
   }
 }

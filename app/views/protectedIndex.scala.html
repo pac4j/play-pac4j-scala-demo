@@ -1,6 +1,6 @@
-@import org.pac4j.core.profile.CommonProfile
 @import org.pac4j.play.scala.Pac4jScalaTemplateHelper
-@(profiles: List[org.pac4j.core.profile.CommonProfile])(implicit pac4jScalaTemplateHelper: Pac4jScalaTemplateHelper[CommonProfile], requestHeader: RequestHeader)
+@import org.pac4j.core.profile.UserProfile
+@(profiles: List[org.pac4j.core.profile.UserProfile])(implicit pac4jScalaTemplateHelper: Pac4jScalaTemplateHelper[UserProfile], requestHeader: RequestHeader)
 <h1>protected area</h1>
 <a href="..">Back</a><br />
 <br /><br />

@@ -1,7 +1,5 @@
-@(profileList: java.util.List[org.pac4j.core.profile.CommonProfile])
-@import scala.collection.JavaConverters._
-@profiles() = { @profileList.toList }
+@(profileList: java.util.List[org.pac4j.core.profile.UserProfile])
 <h1>CSRF</h1>
 <a href="..">Back</a><br />
 <br /><br />
-profiles: @profiles<br />
+profiles: @profileList<br />
