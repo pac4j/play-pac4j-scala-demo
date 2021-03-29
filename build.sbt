@@ -7,7 +7,7 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 scalaVersion := "2.13.5"
 
 val playPac4jVersion = "11.0.0-PLAY2.8-RC2"
-val pac4jVersion = "5.0.0-RC2"
+val pac4jVersion = "5.0.0"
 val playVersion = "2.8.7"
 
 libraryDependencies ++= Seq(
