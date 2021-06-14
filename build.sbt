@@ -31,7 +31,7 @@ libraryDependencies ++= Seq(
   "org.pac4j" % "pac4j-couch" % pac4jVersion excludeAll(ExclusionRule(organization = "com.fasterxml.jackson.core")),
   "org.apache.shiro" % "shiro-core" % "1.7.1",
   "com.typesafe.play" % "play-cache_2.13" % playVersion,
-  "commons-io" % "commons-io" % "2.9.0"
+  "commons-io" % "commons-io" % "2.10.0"
 )
 
 resolvers ++= Seq(
