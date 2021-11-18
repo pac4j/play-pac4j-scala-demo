@@ -1,9 +1,0 @@
-@import org.pac4j.play.scala.Pac4jScalaTemplateHelper
-@import org.pac4j.core.profile.UserProfile
-@(profiles: List[org.pac4j.core.profile.UserProfile])(implicit pac4jScalaTemplateHelper: Pac4jScalaTemplateHelper[UserProfile], requestHeader: RequestHeader)
-<h1>protected area</h1>
-<a href="..">Back</a><br />
-<br /><br />
-profiles: @profiles<br />
-<br />
-profiles from templatehelper: @pac4jScalaTemplateHelper.getCurrentProfiles<br />
