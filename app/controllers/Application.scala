@@ -16,7 +16,7 @@ import org.pac4j.core.util.Pac4jConstants
 import org.pac4j.core.exception.http.WithLocationAction
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 class Application @Inject() (val controllerComponents: SecurityComponents, implicit val pac4jTemplateHelper: Pac4jScalaTemplateHelper[UserProfile]) extends Security[UserProfile] {
 
@@ -24,7 +24,7 @@ class Application @Inject() (val controllerComponents: SecurityComponents, impli
     val webContext = new PlayWebContext(request)
     val profileManager = new ProfileManager(webContext, controllerComponents.sessionStore)
     val profiles = profileManager.getProfiles()
-    asScalaBuffer(profiles).toList
+    profiles.asScala.toList
   }
 
   def index = Secure("AnonymousClient") { implicit request =>
