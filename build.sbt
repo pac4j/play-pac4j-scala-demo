@@ -29,7 +29,7 @@ libraryDependencies ++= Seq(
   "org.pac4j" % "pac4j-mongo" % pac4jVersion excludeAll(ExclusionRule(organization = "com.fasterxml.jackson.core")),
   "org.pac4j" % "pac4j-kerberos" % pac4jVersion exclude("org.springframework", "spring-core"),
   "org.pac4j" % "pac4j-couch" % pac4jVersion excludeAll(ExclusionRule(organization = "com.fasterxml.jackson.core")),
-  "org.apache.shiro" % "shiro-core" % "1.9.1",
+  "org.apache.shiro" % "shiro-core" % "1.10.0",
   "com.typesafe.play" %% "play-cache" % playVersion,
   "commons-io" % "commons-io" % "2.11.0"
 )
