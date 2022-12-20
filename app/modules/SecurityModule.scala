@@ -3,31 +3,32 @@ package modules
 import com.google.inject.{AbstractModule, Provides}
 import controllers.{CustomAuthorizer, DemoHttpActionAdapter, RoleAdminAuthGenerator}
 import org.pac4j.cas.client.{CasClient, CasProxyReceptor}
+import org.pac4j.cas.config.{CasConfiguration, CasProtocol}
+import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer
 import org.pac4j.core.client.Clients
+import org.pac4j.core.client.direct.AnonymousClient
+import org.pac4j.core.config.Config
+import org.pac4j.core.context.FrameworkParameters
+import org.pac4j.core.context.session.{SessionStore, SessionStoreFactory}
+import org.pac4j.core.matching.matcher.PathMatcher
+import org.pac4j.core.profile.CommonProfile
 import org.pac4j.http.client.direct.{DirectBasicAuthClient, ParameterClient}
 import org.pac4j.http.client.indirect.{FormClient, IndirectBasicAuthClient}
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator
+import org.pac4j.jwt.config.signature.SecretSignatureConfiguration
 import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator
 import org.pac4j.oauth.client.{FacebookClient, TwitterClient}
 import org.pac4j.oidc.client.OidcClient
-import org.pac4j.play.{CallbackController, LogoutController}
-import play.api.{Configuration, Environment}
-import java.io.File
-import java.nio.charset.StandardCharsets
-
-import org.pac4j.cas.config.{CasConfiguration, CasProtocol}
-import org.pac4j.play.store.{PlayCookieSessionStore, ShiroAesDataEncrypter}
-import org.pac4j.core.authorization.authorizer.RequireAnyRoleAuthorizer
-import org.pac4j.core.client.direct.AnonymousClient
-import org.pac4j.core.config.Config
-import org.pac4j.core.context.session.SessionStore
-import org.pac4j.core.matching.matcher.PathMatcher
-import org.pac4j.core.profile.CommonProfile
-import org.pac4j.jwt.config.signature.SecretSignatureConfiguration
 import org.pac4j.oidc.config.OidcConfiguration
 import org.pac4j.play.scala.{DefaultSecurityComponents, Pac4jScalaTemplateHelper, SecurityComponents}
+import org.pac4j.play.store.{PlayCookieSessionStore, ShiroAesDataEncrypter}
+import org.pac4j.play.{CallbackController, LogoutController}
 import org.pac4j.saml.client.SAML2Client
 import org.pac4j.saml.config.SAML2Configuration
+import play.api.{Configuration, Environment}
+
+import java.io.File
+import java.nio.charset.StandardCharsets
 
 /**
   * Guice DI module to be included in application.conf
@@ -124,7 +125,8 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
 
   @Provides
   def provideConfig(facebookClient: FacebookClient, twitterClient: TwitterClient, formClient: FormClient, indirectBasicAuthClient: IndirectBasicAuthClient,
-                    casClient: CasClient, saml2Client: SAML2Client, oidcClient: OidcClient, parameterClient: ParameterClient, directBasicAuthClient: DirectBasicAuthClient): Config = {
+                    casClient: CasClient, saml2Client: SAML2Client, oidcClient: OidcClient, parameterClient: ParameterClient, directBasicAuthClient: DirectBasicAuthClient,
+                    sessionStore: SessionStore): Config = {
     val clients = new Clients(baseUrl + "/callback", facebookClient, twitterClient, formClient,
       indirectBasicAuthClient, casClient, saml2Client, oidcClient, parameterClient, directBasicAuthClient,
       new AnonymousClient())
@@ -133,6 +135,9 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
     config.addAuthorizer("admin", new RequireAnyRoleAuthorizer("ROLE_ADMIN"))
     config.addAuthorizer("custom", new CustomAuthorizer)
     config.addMatcher("excludedPath", new PathMatcher().excludeRegex("^/facebook/notprotected\\.html$"))
+    config.setSessionStoreFactory(new SessionStoreFactory {
+      override def newSessionStore(parameters: FrameworkParameters): SessionStore = sessionStore
+    });
     config.setHttpActionAdapter(new DemoHttpActionAdapter())
     config
   }

@@ -1,13 +1,13 @@
 name := "play-pac4j-scala-demo"
 
-version := "11.0.0-PLAY2.8-SNAPSHOT"
+version := "12.0.0-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion := "2.13.10"
 
-val playPac4jVersion = "11.1.0-PLAY2.8"
-val pac4jVersion = "5.7.0"
+val playPac4jVersion = "12.0.0-SNAPSHOT"
+val pac4jVersion = "6.0.0-RC5-SNAPSHOT"
 val playVersion = "2.8.18"
 
 libraryDependencies ++= Seq(
@@ -30,8 +30,10 @@ libraryDependencies ++= Seq(
   "org.pac4j" % "pac4j-kerberos" % pac4jVersion exclude("org.springframework", "spring-core"),
   "org.pac4j" % "pac4j-couch" % pac4jVersion excludeAll(ExclusionRule(organization = "com.fasterxml.jackson.core")),
   "org.apache.shiro" % "shiro-core" % "1.10.1",
+  "ch.qos.logback" % "logback-classic" % "1.4.5",
+  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.14.0",
   "com.typesafe.play" %% "play-cache" % playVersion,
-  "commons-io" % "commons-io" % "2.11.0"
+  "org.projectlombok" % "lombok" % "1.18.24"
 )
 
 resolvers ++= Seq(

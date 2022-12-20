@@ -1,36 +1,39 @@
 package controllers
 
+import org.pac4j.cas.profile.CasProxyProfile
 import org.pac4j.core.client.IndirectClient
-import org.pac4j.http.client.indirect.FormClient
-import org.pac4j.jwt.profile.JwtGenerator
-import play.api.mvc._
+import org.pac4j.core.exception.http.WithLocationAction
 import org.pac4j.core.profile._
-import org.pac4j.core.util.CommonHelper
+import org.pac4j.core.util.{CommonHelper, Pac4jConstants}
+import org.pac4j.http.client.indirect.FormClient
+import org.pac4j.jwt.config.signature.SecretSignatureConfiguration
+import org.pac4j.jwt.profile.JwtGenerator
 import org.pac4j.play.PlayWebContext
+import org.pac4j.play.context.PlayFrameworkParameters
 import org.pac4j.play.scala._
 import play.api.libs.json.Json
-import org.pac4j.core.credentials.Credentials
-import javax.inject.Inject
-import org.pac4j.cas.profile.CasProxyProfile
-import org.pac4j.core.util.Pac4jConstants
-import org.pac4j.core.exception.http.WithLocationAction
-import org.pac4j.jwt.config.signature.SecretSignatureConfiguration
+import play.api.mvc._
 
+import javax.inject.Inject
 import scala.jdk.CollectionConverters._
 
 class Application @Inject() (val controllerComponents: SecurityComponents, implicit val pac4jTemplateHelper: Pac4jScalaTemplateHelper[UserProfile]) extends Security[UserProfile] {
 
   private def getProfiles(implicit request: RequestHeader): List[UserProfile] = {
-    val webContext = new PlayWebContext(request)
-    val profileManager = new ProfileManager(webContext, controllerComponents.sessionStore)
+    val parameters = new PlayFrameworkParameters(request)
+    val webContext = controllerComponents.config.getWebContextFactory.newContext(parameters)
+    val sessionStore = controllerComponents.config.getSessionStoreFactory.newSessionStore(parameters)
+    val profileManager = controllerComponents.config.getProfileManagerFactory.apply(webContext, sessionStore)
     val profiles = profileManager.getProfiles()
     profiles.asScala.toList
   }
 
   def index = Secure("AnonymousClient") { implicit request =>
     //println(pac4jTemplateHelper.getCurrentProfile.get)
-    val webContext = new PlayWebContext(request)
-    val sessionId = controllerComponents.sessionStore.getSessionId(webContext, false).orElse("nosession")
+    val parameters = new PlayFrameworkParameters(request)
+    val webContext = controllerComponents.config.getWebContextFactory.newContext(parameters).asInstanceOf[PlayWebContext]
+    val sessionStore = controllerComponents.config.getSessionStoreFactory.newSessionStore(parameters)
+    val sessionId = sessionStore.getSessionId(webContext, false).orElse("nosession")
     val csrfToken = webContext.getRequestAttribute(Pac4jConstants.CSRF_TOKEN).orElse(null).asInstanceOf[String]
     webContext.supplementResponse(Ok(views.html.index(profiles, csrfToken, sessionId)))
   }
@@ -129,9 +132,11 @@ class Application @Inject() (val controllerComponents: SecurityComponents, impli
   }
 
   def forceLogin = Action { request =>
-    val context: PlayWebContext = new PlayWebContext(request)
-    val client = config.getClients.findClient(context.getRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER).get).get.asInstanceOf[IndirectClient]
-    val location = client.getRedirectionAction(context, controllerComponents.sessionStore).get.asInstanceOf[WithLocationAction].getLocation
-    context.supplementResponse(Redirect(location))
+    val parameters = new PlayFrameworkParameters(request)
+    val webContext = controllerComponents.config.getWebContextFactory.newContext(parameters).asInstanceOf[PlayWebContext]
+    val sessionStore = controllerComponents.config.getSessionStoreFactory.newSessionStore(parameters)
+    val client = config.getClients.findClient(webContext.getRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER).get).get.asInstanceOf[IndirectClient]
+    val location = client.getRedirectionAction(webContext, sessionStore).get.asInstanceOf[WithLocationAction].getLocation
+    webContext.supplementResponse(Redirect(location))
   }
 }
