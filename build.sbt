@@ -46,3 +46,5 @@ resolvers ++= Seq(
 routesGenerator := InjectedRoutesGenerator
 
 run / fork := true
+
+ThisBuild / evictionErrorLevel := Level.Info

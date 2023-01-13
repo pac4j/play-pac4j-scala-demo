@@ -136,7 +136,7 @@ class Application @Inject() (val controllerComponents: SecurityComponents, impli
     val webContext = controllerComponents.config.getWebContextFactory.newContext(parameters).asInstanceOf[PlayWebContext]
     val sessionStore = controllerComponents.config.getSessionStoreFactory.newSessionStore(parameters)
     val client = config.getClients.findClient(webContext.getRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER).get).get.asInstanceOf[IndirectClient]
-    val location = client.getRedirectionAction(webContext, sessionStore).get.asInstanceOf[WithLocationAction].getLocation
+    val location = client.getRedirectionAction(webContext, sessionStore, controllerComponents.config.getProfileManagerFactory).get.asInstanceOf[WithLocationAction].getLocation
     webContext.supplementResponse(Redirect(location))
   }
 }
