@@ -2,6 +2,7 @@ package controllers
 
 import org.pac4j.cas.profile.CasProxyProfile
 import org.pac4j.core.client.IndirectClient
+import org.pac4j.core.context.CallContext
 import org.pac4j.core.exception.http.WithLocationAction
 import org.pac4j.core.profile._
 import org.pac4j.core.util.{CommonHelper, Pac4jConstants}
@@ -136,7 +137,7 @@ class Application @Inject() (val controllerComponents: SecurityComponents, impli
     val webContext = controllerComponents.config.getWebContextFactory.newContext(parameters).asInstanceOf[PlayWebContext]
     val sessionStore = controllerComponents.config.getSessionStoreFactory.newSessionStore(parameters)
     val client = config.getClients.findClient(webContext.getRequestParameter(Pac4jConstants.DEFAULT_CLIENT_NAME_PARAMETER).get).get.asInstanceOf[IndirectClient]
-    val location = client.getRedirectionAction(webContext, sessionStore, controllerComponents.config.getProfileManagerFactory).get.asInstanceOf[WithLocationAction].getLocation
+    val location = client.getRedirectionAction(new CallContext(webContext, sessionStore, controllerComponents.config.getProfileManagerFactory)).get.asInstanceOf[WithLocationAction].getLocation
     webContext.supplementResponse(Redirect(location))
   }
 }
