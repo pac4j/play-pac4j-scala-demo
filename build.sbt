@@ -6,7 +6,7 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion := "2.13.12"
 
-val playPac4jVersion = "12.0.0-PLAY2.8-SNAPSHOT"
+val playPac4jVersion = "12.0.0-PLAY3.0"
 val pac4jVersion = "6.0.0"
 val playVersion = "2.9.0"
 
