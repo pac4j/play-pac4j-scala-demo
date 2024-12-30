@@ -1,14 +1,14 @@
 name := "play-pac4j-scala-demo"
 
-version := "12.0.0-SNAPSHOT"
+version := "12.0.2-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
-scalaVersion := "2.13.15"
+scalaVersion := "3.3.4"
 
-val playPac4jVersion = "12.0.0-PLAY2.8-SNAPSHOT"
+val playPac4jVersion = "12.0.2-PLAY3.0"
 val pac4jVersion = "6.1.0"
-val playVersion = "2.9.6"
+val playVersion = "3.0.6"
 
 libraryDependencies ++= Seq(
   guice,
@@ -32,7 +32,7 @@ libraryDependencies ++= Seq(
   "org.apache.shiro" % "shiro-core" % "1.13.0",
   "ch.qos.logback" % "logback-classic" % "1.5.15",
   "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.18.2",
-  "com.typesafe.play" %% "play-cache" % playVersion,
+  "org.playframework" %% "play-cache" % playVersion,
   "org.projectlombok" % "lombok" % "1.18.36"
 )
 
