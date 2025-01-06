@@ -9,7 +9,7 @@ import org.pac4j.core.profile.UserProfile
 class CustomAuthorizer extends ProfileAuthorizer {
 
   def isAuthorized(context: WebContext, sessionStore: SessionStore, profiles: java.util.List[UserProfile]): Boolean = {
-    return isAnyAuthorized(context, sessionStore, profiles)
+    isAnyAuthorized(context, sessionStore, profiles)
   }
 
   def isProfileAuthorized(context: WebContext, sessionStore: SessionStore, profile: UserProfile): Boolean = {

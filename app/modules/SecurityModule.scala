@@ -81,7 +81,7 @@ class SecurityModule(environment: Environment, configuration: Configuration) ext
   def provideCasProxyReceptor: CasProxyReceptor = new CasProxyReceptor()*/
 
   @Provides
-  def provideCasClient(casProxyReceptor: CasProxyReceptor) = {
+  def provideCasClient(casProxyReceptor: CasProxyReceptor): CasClient = {
     val casConfiguration = new CasConfiguration("https://casserverpac4j.herokuapp.com/login")
     //val casConfiguration = new CasConfiguration("http://localhost:8888/cas/login")
     casConfiguration.setProtocol(CasProtocol.CAS20)
