@@ -8,7 +8,7 @@ scalaVersion := "3.6.3"
 
 val playPac4jVersion = "12.0.2-PLAY3.0"
 val pac4jVersion = "6.1.1"
-val playVersion = "3.0.6"
+val playVersion = "3.0.7"
 
 libraryDependencies ++= Seq(
   guice,
