@@ -10,9 +10,4 @@ This `play-pac4j-scala-demo` project is a Scala Play framework web app to test t
 Build the project and launch the Play app on [http://localhost:9000](http://localhost:9000):
 
     cd play-pac4j-scala-demo
-    bin\activator run
-
-
-## Live demo
-
-Find a live demo on Heroku: [http://play-pac4j-scala-demo.herokuapp.com](http://play-pac4j-scala-demo.herokuapp.com/)
+    sbt run

@@ -1,13 +1,13 @@
 name := "play-pac4j-scala-demo"
 
-version := "12.0.2-PLAY3.0-SNAPSHOT"
+version := "13.0.0-PLAY3.0-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion := "3.7.2"
 
 val playPac4jVersion = "13.0.0-PLAY3.0"
-val pac4jVersion = "6.2.2"
+val pac4jVersion = "6.2.3-SNAPSHOT"
 val playVersion = "3.0.9"
 
 libraryDependencies ++= Seq(
@@ -40,7 +40,8 @@ resolvers ++= Seq(
   Resolver.mavenLocal,
   "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases",
   "Sonatype snapshots repository" at "https://oss.sonatype.org/content/repositories/snapshots/",
-  "Shibboleth releases" at "https://build.shibboleth.net/nexus/content/repositories/releases/"
+  "Shibboleth releases" at "https://build.shibboleth.net/nexus/content/repositories/releases/",
+"Central Portal Snapshots" at "https://central.sonatype.com/repository/maven-snapshots/"
 )
 
 routesGenerator := InjectedRoutesGenerator
