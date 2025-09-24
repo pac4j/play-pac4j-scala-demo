@@ -30,10 +30,10 @@ jobs:
         restore-keys: ${{ runner.os }}-sbt
         
     - name: Run build and test
+      timeout-minutes: 15
       run: |
-        cd ci
-        chmod +x run_and_check.sh
-        ./run_and_check.sh
+        chmod +x ci/run_and_check.sh
+        ci/run_and_check.sh
         
     - name: Upload test logs
       if: failure()
