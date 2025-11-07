@@ -1,5 +1,5 @@
-@import org.pac4j.play.scala.Pac4jScalaTemplateHelper
 @import org.pac4j.core.profile.UserProfile
+@import org.pac4j.play.scala.Pac4jScalaTemplateHelper
 @(profiles: List[org.pac4j.core.profile.UserProfile], csrfToken: String, sessionId: String)(implicit pac4jScalaTemplateHelper: Pac4jScalaTemplateHelper[UserProfile], requestHeader: RequestHeader)
 <h1>index</h1>
 <a href="facebook/index.html">Protected url by Facebook : facebook/index.html</a> (use a real account)<br />
@@ -39,8 +39,6 @@ sessionId: @sessionId
 <br />
 <br />
 <h2>Find the source code on <a target="_blank" href="https://github.com/pac4j/play-pac4j-scala-demo">https://github.com/pac4j/play-pac4j-scala-demo</a><br/>
-    <br />
-    See it running on Heroku: <a target="_blank" href="https://play-pac4j-scala-demo.herokuapp.com">https://play-pac4j-scala-demo.herokuapp.com</a></h2>
 
     <!-- Link to Google CDN's jQuery; fall back to local -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
