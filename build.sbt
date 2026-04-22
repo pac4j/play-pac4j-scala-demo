@@ -33,7 +33,7 @@ libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % "1.5.32",
   "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.21.2",
   "org.playframework" %% "play-cache" % playVersion,
-  "org.projectlombok" % "lombok" % "1.18.44"
+  "org.projectlombok" % "lombok" % "1.18.46"
 )
 
 resolvers ++= Seq(
